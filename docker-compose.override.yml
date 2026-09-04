@@ -1,0 +1,18 @@
+# Solo para DESARROLLO LOCAL. Docker Compose lo carga automáticamente junto a
+# docker-compose.yml cuando ejecutas `docker compose up` sin más flags, así
+# que aquí solo hace falta añadir lo que cambia respecto a la base: los
+# puertos publicados al host para poder abrir localhost en el navegador y
+# conectar un cliente SQL a Postgres.
+#
+# Coolify (y cualquier despliegue real) ignora este archivo por completo:
+# solo se le indica la ruta a docker-compose.yml.
+services:
+  postgres:
+    # Puerto de host configurable porque en la máquina de desarrollo puede
+    # haber ya otro Postgres ocupando 5432/5433.
+    ports:
+      - "${DB_HOST_PORT:-5434}:5432"
+
+  web:
+    ports:
+      - "${WEB_PORT:-80}:80"

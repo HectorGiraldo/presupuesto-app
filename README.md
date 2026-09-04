@@ -43,7 +43,8 @@ presupuesto-app/
 │  └─ web/      # Frontend Angular
 ├─ packages/
 │  └─ shared/   # Tipos, DTOs y utilidades compartidas entre api y web
-└─ docker-compose.yml
+├─ docker-compose.yml           # Base: sin puertos publicados (lo que usa Coolify)
+└─ docker-compose.override.yml # Solo local: añade los puertos para abrir localhost
 ```
 
 ## Desarrollo local
@@ -75,13 +76,29 @@ La web queda en `http://localhost:4200` (con proxy a la API en `http://localhost
 
 ## Despliegue con Docker / Coolify
 
+`docker-compose.yml` es la base y **no publica ningún puerto al host** — es
+el archivo que se apunta tal cual en Coolify (o cualquier host donde un proxy
+ya ocupe el 80/443). Si un servicio publicara un puerto con `host:contenedor`,
+Coolify lo enlazaría literalmente en el servidor saltándose su propio proxy:
+reventaría ese proxy en el caso de `web`, y dejaría la base de datos expuesta
+a internet en el caso de `postgres`.
+
 ```bash
+# Prueba local del stack completo (usa docker-compose.yml +
+# docker-compose.override.yml automáticamente, así que sí expone puertos)
 docker compose up -d --build
 ```
 
-Esto levanta tres contenedores: `postgres`, `api` y `web`. El contenedor `web`
+Levanta tres contenedores: `postgres`, `api` y `web`. El contenedor `web`
 sirve el build de Angular con nginx y reenvía `/api` al contenedor `api`, así
-que solo hace falta publicar **un** dominio — no hay que configurar CORS.
+que en producción solo hace falta publicar **un** dominio — no hay que
+configurar CORS.
+
+**En Coolify**: nuevo recurso → Docker Compose → repositorio público (o el que
+uses) → "Docker Compose Location": `docker-compose.yml` (el de la raíz, sin
+más). Asigna el dominio únicamente al servicio `web` desde la pestaña
+Domains — `api` y `postgres` no lo necesitan, se hablan entre sí por nombre
+de servicio dentro de la red que crea el propio stack.
 
 Variables de entorno necesarias (ver `.env.example`): credenciales de la base
 de datos y `JWT_SECRET`. Las migraciones se aplican automáticamente al arrancar
