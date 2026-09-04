@@ -1,0 +1,51 @@
+.report-block { margin-bottom: 1.5rem; }
+.report-block h2 { font-size: 1.05rem; }
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.card-header h2 { margin: 0; }
+
+/* Barra apilada: segmentos con un hueco de 2px de superficie entre ellos,
+   igual que separa segmentos apilados/barras adyacentes cualquier gráfico de la skill. */
+.split-bar {
+  display: flex;
+  height: 28px;
+  border-radius: 6px;
+  overflow: hidden;
+  gap: 2px;
+  background: var(--color-bg);
+  margin-top: 0.75rem;
+}
+.split-segment { height: 100%; min-width: 2px; }
+
+.split-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-top: 0.9rem;
+  font-size: 0.85rem;
+}
+.legend-item { display: flex; align-items: center; gap: 0.4rem; }
+.dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+.overspend-note { margin-top: 0.9rem; font-size: 0.85rem; }
+
+.trend-summary { font-size: 0.9rem; margin: 0.5rem 0 0.75rem; }
+
+.table-scroll { overflow-x: auto; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+.cashflow-filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.cashflow-filters .field { margin-bottom: 0; }

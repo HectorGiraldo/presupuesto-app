@@ -1,0 +1,98 @@
+<div class="page-header">
+  <h1>Vista anual</h1>
+  <div class="month-nav">
+    <button type="button" (click)="prevYear()">←</button>
+    <span class="month-label">{{ year() }}</span>
+    <button type="button" (click)="nextYear()">→</button>
+  </div>
+</div>
+
+@if (loading()) {
+  <p class="text-muted">Cargando…</p>
+} @else if (summary(); as s) {
+  <div class="summary-row">
+    <div class="card summary-item">
+      <div class="text-muted">Ingresos del año</div>
+      <div class="summary-value text-success">{{ s.totalIncomeCents | euros }}</div>
+    </div>
+    <div class="card summary-item">
+      <div class="text-muted">Gastos del año</div>
+      <div class="summary-value text-danger">{{ s.totalExpenseCents | euros }}</div>
+    </div>
+    <div class="card summary-item">
+      <div class="text-muted">Balance</div>
+      <div class="summary-value" [class.text-success]="s.totalBalanceCents >= 0" [class.text-danger]="s.totalBalanceCents < 0">{{ s.totalBalanceCents | euros }}</div>
+    </div>
+    <div class="card summary-item">
+      <div class="text-muted">Tasa de ahorro</div>
+      <div class="summary-value">{{ s.savingsRate }}%</div>
+    </div>
+    <div class="card summary-item">
+      <div class="text-muted">Proyección de cierre</div>
+      <div class="summary-value">{{ s.projectedBalanceCents | euros }}</div>
+    </div>
+  </div>
+
+  <div class="card table-card">
+    <h2>Resumen mensual</h2>
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          @for (m of monthNames; track m) { <th>{{ m }}</th> }
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="row-label">Ingresos</td>
+          @for (m of s.months; track m.month) { <td class="num text-success">{{ m.incomeCents | euros:{decimals:false} }}</td> }
+        </tr>
+        <tr>
+          <td class="row-label">Gastos</td>
+          @for (m of s.months; track m.month) { <td class="num text-danger">{{ m.expenseCents | euros:{decimals:false} }}</td> }
+        </tr>
+        <tr>
+          <td class="row-label">Balance</td>
+          @for (m of s.months; track m.month) {
+            <td class="num" [class.text-success]="m.balanceCents >= 0" [class.text-danger]="m.balanceCents < 0">
+              {{ m.balanceCents | euros:{decimals:false} }}
+            </td>
+          }
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card table-card heatmap-card">
+    <h2>Gasto por categoría (mapa de calor)</h2>
+    <p class="text-muted heatmap-hint">El color de cada celda es relativo al mes de mayor gasto de esa misma categoría.</p>
+    <div class="table-scroll">
+      <table class="heatmap">
+        <thead>
+          <tr>
+            <th class="row-label">Categoría</th>
+            @for (m of monthNames; track m) { <th>{{ m }}</th> }
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (cat of expenseCategories(); track cat.categoryId) {
+            <tr>
+              <td class="row-label">
+                <span class="dot" [style.background]="cat.color"></span>{{ cat.categoryName }}
+              </td>
+              @for (value of cat.monthlyCents; track $index) {
+                <td class="num heat-cell"
+                    [style.background]="cellStyle(cat.monthlyCents, value).background"
+                    [style.color]="cellStyle(cat.monthlyCents, value).color">
+                  {{ value > 0 ? (value | euros:{decimals:false}) : '' }}
+                </td>
+              }
+              <td class="num row-total">{{ cat.totalCents | euros:{decimals:false} }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}

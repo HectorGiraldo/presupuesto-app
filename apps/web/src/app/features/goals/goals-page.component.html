@@ -1,0 +1,82 @@
+<div class="page-header">
+  <h1>Metas de ahorro</h1>
+  <button class="btn" type="button" (click)="openCreate()">+ Nueva meta</button>
+</div>
+
+@if (showForm()) {
+  <form class="card form-card" [formGroup]="form" (ngSubmit)="submit()">
+    <h2>{{ editingId() ? 'Editar meta' : 'Nueva meta' }}</h2>
+    <div class="form-grid">
+      <div class="field">
+        <label for="name">Nombre</label>
+        <input id="name" type="text" formControlName="name" placeholder="Fondo de emergencia" />
+      </div>
+      <div class="field">
+        <label for="targetCents">Objetivo</label>
+        <app-money-input formControlName="targetCents" />
+      </div>
+      <div class="field">
+        <label for="targetDate">Fecha objetivo (opcional)</label>
+        <input id="targetDate" type="date" formControlName="targetDate" />
+      </div>
+      <div class="field">
+        <label for="accountId">Cuenta vinculada (opcional)</label>
+        <select id="accountId" formControlName="accountId">
+          <option value="">— Ninguna —</option>
+          @for (a of accounts(); track a.id) { <option [value]="a.id">{{ a.name }}</option> }
+        </select>
+      </div>
+      <div class="field">
+        <label for="color">Color</label>
+        <input id="color" type="color" formControlName="color" />
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" type="button" (click)="cancel()">Cancelar</button>
+      <button class="btn" type="submit">Guardar</button>
+    </div>
+  </form>
+}
+
+@if (loading()) {
+  <p class="text-muted">Cargando…</p>
+} @else if (goals().length === 0) {
+  <div class="empty-state card"><p>Todavía no tienes metas de ahorro.</p></div>
+} @else {
+  <div class="goals-grid">
+    @for (goal of goals(); track goal.id) {
+      <div class="card goal-card" [style.borderLeftColor]="goal.color">
+        <div class="goal-header">
+          <span class="goal-name">{{ goal.name }}</span>
+          <span class="goal-pct">{{ goal.progressPercent }}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="fill ok" [style.width.%]="(goal.progressPercent ?? 0) > 100 ? 100 : goal.progressPercent"></div>
+        </div>
+        <div class="goal-amounts text-muted">{{ goal.savedCents | euros }} de {{ goal.targetCents | euros }}</div>
+
+        @if (goal.targetDate) {
+          <div class="goal-meta text-muted">
+            Objetivo: {{ goal.targetDate | dateOnly }}
+            @if (goal.monthlyNeededCents) { · aporta {{ goal.monthlyNeededCents | euros }}/mes para llegar a tiempo }
+          </div>
+        }
+
+        @if (contributingId() === goal.id) {
+          <form class="contribution-form" [formGroup]="contributionForm" (ngSubmit)="submitContribution()">
+            <app-money-input formControlName="amountCents" placeholder="Importe" />
+            <input type="date" formControlName="date" />
+            <button class="btn btn-sm" type="submit">Añadir</button>
+            <button class="btn btn-secondary btn-sm" type="button" (click)="cancelContribute()">✕</button>
+          </form>
+        } @else {
+          <div class="goal-actions">
+            <button class="btn btn-sm" type="button" (click)="openContribute(goal)">+ Aportar</button>
+            <button class="btn btn-secondary btn-sm" type="button" (click)="openEdit(goal)">Editar</button>
+            <button class="btn btn-danger btn-sm" type="button" (click)="remove(goal)">Eliminar</button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+}

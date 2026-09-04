@@ -1,0 +1,110 @@
+<div class="page-header">
+  <h1>Resumen de {{ monthName }}</h1>
+  <a class="btn" routerLink="/transactions">+ Nuevo movimiento</a>
+</div>
+
+@if (loading()) {
+  <p class="text-muted">Cargando…</p>
+} @else if (summary(); as s) {
+  <div class="kpi-grid">
+    <div class="card kpi">
+      <div class="kpi-label">Saldo total</div>
+      <div class="kpi-value">{{ s.totalBalanceCents | euros }}</div>
+    </div>
+    <div class="card kpi">
+      <div class="kpi-label">Ingresos del mes</div>
+      <div class="kpi-value text-success">{{ s.month.incomeCents | euros }}</div>
+    </div>
+    <div class="card kpi">
+      <div class="kpi-label">Gastos del mes</div>
+      <div class="kpi-value text-danger">{{ s.month.expenseCents | euros }}</div>
+    </div>
+    <div class="card kpi">
+      <div class="kpi-label">Disponible ahora mismo</div>
+      <div class="kpi-value" [class.text-success]="s.budget && s.budget.availableCents >= 0" [class.text-danger]="s.budget && s.budget.availableCents < 0">
+        {{ (s.budget?.availableCents ?? s.month.balanceCents) | euros }}
+      </div>
+      <div class="kpi-sub text-muted">Tasa de ahorro: {{ s.month.savingsRate }}%</div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="card">
+      <div class="card-header">
+        <h2>Presupuesto del mes</h2>
+        <a routerLink="/budget">Ver todo →</a>
+      </div>
+      @if (!s.budget || s.budget.lines.length === 0) {
+        <p class="text-muted">Todavía no has definido un presupuesto para este mes.</p>
+        <a class="btn btn-sm" routerLink="/budget">Crear presupuesto</a>
+      } @else {
+        <div class="budget-lines">
+          @for (line of s.budget.lines.slice(0, 6); track line.categoryId) {
+            <div class="budget-line">
+              <div class="budget-line-top">
+                <span>{{ line.categoryName }}</span>
+                <span class="text-muted">{{ line.actualCents | euros }} / {{ line.plannedCents | euros }}</span>
+              </div>
+              <div class="progress-bar">
+                <div class="fill" [class]="line.status" [style.width.%]="line.percentUsed > 100 ? 100 : line.percentUsed"></div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="card">
+      <h2>Top gastos del mes</h2>
+      @if (s.month.topExpenseCategories.length === 0) {
+        <p class="text-muted">Todavía no hay gastos este mes.</p>
+      } @else {
+        <div class="top-categories">
+          @for (c of s.month.topExpenseCategories; track c.categoryId) {
+            <div class="top-cat-row">
+              <span class="dot" [style.background]="c.color"></span>
+              <span class="top-cat-name">{{ c.categoryName }}</span>
+              <span class="top-cat-amount">{{ c.amountCents | euros }}</span>
+              <span class="text-muted top-cat-pct">{{ c.percentage }}%</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="card">
+      <h2>Recurrentes pendientes</h2>
+      @if (s.pendingRecurring.length === 0) {
+        <p class="text-muted">No hay nada pendiente de confirmar. 🎉</p>
+      } @else {
+        <div class="pending-list">
+          @for (p of s.pendingRecurring; track p.ruleId) {
+            <div class="pending-row">
+              <div>
+                <div class="pending-desc">{{ p.description }}</div>
+                <div class="text-muted pending-meta">{{ p.dueDate | dateOnly }} · {{ p.accountName }} · {{ p.daysOverdue }} días</div>
+              </div>
+              <div class="pending-amount">{{ p.amountCents | euros }}</div>
+              <button class="btn btn-sm" type="button" (click)="confirmRecurring(p.ruleId)">Confirmar</button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="card">
+      <h2>Cuentas</h2>
+      <div class="accounts-list">
+        @for (a of s.accounts; track a.id) {
+          <div class="account-row">
+            <span class="dot" [style.background]="a.color"></span>
+            <span class="account-name">{{ a.name }}</span>
+            <span class="account-balance" [class.text-success]="a.balanceCents >= 0" [class.text-danger]="a.balanceCents < 0">
+              {{ a.balanceCents | euros }}
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

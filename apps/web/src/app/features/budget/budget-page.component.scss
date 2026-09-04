@@ -1,0 +1,36 @@
+.actions-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.summary-value { font-size: 1.3rem; font-weight: 700; }
+
+.lines { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.line-top {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+.line-name { font-weight: 500; }
+.spacer { flex: 1; }
+.line-amounts { font-size: 0.85rem; color: var(--color-text-muted); white-space: nowrap; }
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.over-text { font-size: 0.8rem; margin-top: 0.35rem; }

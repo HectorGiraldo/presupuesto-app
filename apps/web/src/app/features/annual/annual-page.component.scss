@@ -1,0 +1,29 @@
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.summary-value { font-size: 1.25rem; font-weight: 700; }
+
+.table-card { margin-bottom: 1.5rem; overflow-x: auto; }
+.table-card h2 { font-size: 1.05rem; }
+
+table { min-width: 720px; }
+.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.row-label { font-weight: 500; white-space: nowrap; }
+
+.heatmap-hint { font-size: 0.82rem; margin: -0.3rem 0 0.75rem; }
+.table-scroll { overflow-x: auto; }
+table.heatmap { min-width: 900px; }
+table.heatmap th, table.heatmap td { padding: 0.4rem 0.55rem; }
+.heat-cell { border-radius: 4px; font-size: 0.8rem; }
+.row-total { font-weight: 600; }
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 0.4rem;
+}

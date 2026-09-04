@@ -1,0 +1,48 @@
+.form-hint { font-size: 0.8rem; margin: -0.5rem 0 0.75rem; }
+
+.debts-list { display: flex; flex-direction: column; gap: 1rem; }
+
+.debt-top {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.debt-name { font-weight: 600; }
+.spacer { flex: 1; }
+.debt-balance { font-weight: 700; }
+
+.debt-meta { font-size: 0.82rem; margin-top: 0.4rem; }
+.debt-actions { display: flex; gap: 0.4rem; margin-top: 0.9rem; flex-wrap: wrap; }
+
+.contribution-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.9rem;
+  align-items: center;
+}
+/* min-width evita que el importe se aplaste a casi 0px en tarjetas estrechas;
+   flex-wrap manda la fecha y los botones a otra línea si no caben. */
+.contribution-form app-money-input { flex: 1 1 110px; min-width: 110px; }
+.contribution-form input[type="date"] {
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  flex: 1 1 130px;
+  min-width: 130px;
+}
+
+.schedule-wrap {
+  margin-top: 1rem;
+  border-top: 1px solid var(--color-border);
+  padding-top: 1rem;
+}
+.schedule-summary { margin-bottom: 0.6rem; font-size: 0.85rem; }
+.schedule-table {
+  max-height: 320px;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+.schedule-table table { font-size: 0.82rem; }
+.schedule-table th { position: sticky; top: 0; background: var(--color-surface); }

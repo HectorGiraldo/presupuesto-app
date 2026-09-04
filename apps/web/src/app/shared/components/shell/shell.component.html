@@ -1,0 +1,35 @@
+<div class="shell" [class.menu-open]="menuOpen()">
+  <header class="topbar">
+    <button class="menu-btn" type="button" (click)="toggleMenu()" aria-label="Abrir menú">☰</button>
+    <span class="brand">💰 Mi Presupuesto</span>
+  </header>
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">💰 Mi Presupuesto</div>
+    <nav>
+      @for (item of navItems; track item.path) {
+        <a [routerLink]="item.path" routerLinkActive="active" (click)="closeMenu()">
+          <span class="icon">{{ item.icon }}</span>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+    <div class="sidebar-footer">
+      @if (user(); as u) {
+        <div class="user-name">{{ u.name }}</div>
+        <div class="user-email">{{ u.email }}</div>
+      }
+      <button type="button" class="logout-btn" (click)="logout()">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  @if (menuOpen()) {
+    <div class="backdrop" (click)="closeMenu()"></div>
+  }
+
+  <main class="content">
+    <router-outlet />
+  </main>
+</div>
+
+<app-toasts />

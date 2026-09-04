@@ -1,0 +1,87 @@
+<div class="page-header">
+  <h1>Categorías</h1>
+  <button class="btn" type="button" (click)="openCreate()">+ Nueva categoría</button>
+</div>
+
+<div class="tabs">
+  <button type="button" class="tab" [class.active]="activeKind() === CategoryKind.EXPENSE" (click)="setTab(CategoryKind.EXPENSE)">Gastos</button>
+  <button type="button" class="tab" [class.active]="activeKind() === CategoryKind.INCOME" (click)="setTab(CategoryKind.INCOME)">Ingresos</button>
+</div>
+
+@if (showForm()) {
+  <form class="card form-card" [formGroup]="form" (ngSubmit)="submit()">
+    <h2>{{ editingId() ? 'Editar categoría' : 'Nueva categoría' }}</h2>
+    <div class="form-grid">
+      <div class="field">
+        <label for="name">Nombre</label>
+        <input id="name" type="text" formControlName="name" />
+      </div>
+      <div class="field">
+        <label for="kind">Tipo</label>
+        <select id="kind" formControlName="kind">
+          <option [value]="CategoryKind.EXPENSE">Gasto</option>
+          <option [value]="CategoryKind.INCOME">Ingreso</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="parentId">Categoría padre (opcional)</label>
+        <select id="parentId" formControlName="parentId">
+          <option [ngValue]="null">— Ninguna (categoría principal) —</option>
+          @for (p of parentOptions(); track p.id) {
+            <option [ngValue]="p.id">{{ p.name }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label for="color">Color</label>
+        <input id="color" type="color" formControlName="color" />
+      </div>
+    </div>
+    <div class="checkbox-field">
+      <input id="essential" type="checkbox" formControlName="essential" />
+      <label for="essential">Gasto imprescindible (afecta al análisis 50/30/20)</label>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" type="button" (click)="cancel()">Cancelar</button>
+      <button class="btn" type="submit">Guardar</button>
+    </div>
+  </form>
+}
+
+@if (loading()) {
+  <p class="text-muted">Cargando…</p>
+} @else if (visibleRoots().length === 0) {
+  <div class="empty-state card"><p>No hay categorías de este tipo todavía.</p></div>
+} @else {
+  <div class="category-list">
+    @for (cat of visibleRoots(); track cat.id) {
+      <div class="card category-card" [class.archived]="cat.archived">
+        <div class="category-row">
+          <span class="dot" [style.background]="cat.color"></span>
+          <span class="category-name">{{ cat.name }}</span>
+          @if (cat.essential) { <span class="badge badge-ok">esencial</span> }
+          @if (cat.archived) { <span class="badge badge-unbudgeted">archivada</span> }
+          <div class="spacer"></div>
+          <button class="btn btn-secondary btn-sm" type="button" (click)="openCreate(cat)">+ subcategoría</button>
+          <button class="btn btn-secondary btn-sm" type="button" (click)="openEdit(cat)">Editar</button>
+          <button class="btn btn-danger btn-sm" type="button" (click)="remove(cat)">Eliminar</button>
+        </div>
+        @if (cat.children?.length) {
+          <div class="children">
+            @for (child of cat.children; track child.id) {
+              <div class="category-row child" [class.archived]="child.archived">
+                <span class="dot" [style.background]="child.color"></span>
+                <span class="category-name">{{ child.name }}</span>
+                @if (child.essential) { <span class="badge badge-ok">esencial</span> }
+                @if (child.archived) { <span class="badge badge-unbudgeted">archivada</span> }
+                <div class="spacer"></div>
+                <button class="btn btn-secondary btn-sm" type="button" (click)="openEdit(child)">Editar</button>
+                <button class="btn btn-danger btn-sm" type="button" (click)="remove(child)">Eliminar</button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+}

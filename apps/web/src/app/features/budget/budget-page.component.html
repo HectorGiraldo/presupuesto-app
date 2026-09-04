@@ -1,0 +1,87 @@
+<div class="page-header">
+  <h1>Presupuesto</h1>
+  <div class="month-nav">
+    <button type="button" (click)="prevMonth()">←</button>
+    <span class="month-label">{{ monthLabel() }}</span>
+    <button type="button" (click)="nextMonth()">→</button>
+  </div>
+</div>
+
+<div class="actions-row">
+  <button class="btn btn-secondary btn-sm" type="button" (click)="copyFromPrevious()">Copiar mes anterior</button>
+  <button class="btn btn-sm" type="button" (click)="openCreate()">+ Presupuestar categoría</button>
+</div>
+
+@if (showForm()) {
+  <form class="card form-card" [formGroup]="form" (ngSubmit)="submit()">
+    <h2>Presupuesto de categoría</h2>
+    <div class="form-grid">
+      <div class="field">
+        <label for="categoryId">Categoría</label>
+        <select id="categoryId" formControlName="categoryId">
+          <option value="">— Selecciona —</option>
+          @for (c of budgetableCategories(); track c.id) { <option [value]="c.id">{{ c.name }}</option> }
+        </select>
+      </div>
+      <div class="field">
+        <label for="plannedCents">Importe mensual</label>
+        <app-money-input formControlName="plannedCents" />
+      </div>
+    </div>
+    <div class="checkbox-field">
+      <input id="rollover" type="checkbox" formControlName="rollover" />
+      <label for="rollover">Arrastrar lo que sobre al mes siguiente</label>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" type="button" (click)="cancel()">Cancelar</button>
+      <button class="btn" type="submit">Guardar</button>
+    </div>
+  </form>
+}
+
+@if (loading()) {
+  <p class="text-muted">Cargando…</p>
+} @else if (progress(); as p) {
+  <div class="summary-row">
+    <div class="card summary-item">
+      <div class="text-muted">Planificado</div>
+      <div class="summary-value">{{ p.totalPlannedCents | euros }}</div>
+    </div>
+    <div class="card summary-item">
+      <div class="text-muted">Gastado</div>
+      <div class="summary-value">{{ p.totalActualCents | euros }}</div>
+    </div>
+    <div class="card summary-item">
+      <div class="text-muted">Disponible</div>
+      <div class="summary-value" [class.text-success]="p.availableCents >= 0" [class.text-danger]="p.availableCents < 0">
+        {{ p.availableCents | euros }}
+      </div>
+    </div>
+  </div>
+
+  @if (p.lines.length === 0) {
+    <div class="empty-state card"><p>Todavía no has presupuestado ninguna categoría este mes.</p></div>
+  } @else {
+    <div class="lines">
+      @for (line of p.lines; track line.categoryId) {
+        <div class="card line-card">
+          <div class="line-top">
+            <span class="dot" [style.background]="line.color"></span>
+            <span class="line-name">{{ line.categoryName }}</span>
+            @if (line.essential) { <span class="badge badge-ok">esencial</span> }
+            <span class="badge" [class]="'badge-' + line.status">{{ statusLabel(line.status) }}</span>
+            <div class="spacer"></div>
+            <span class="line-amounts">{{ line.actualCents | euros }} / {{ line.plannedCents | euros }}</span>
+            <button class="btn btn-secondary btn-sm" type="button" (click)="editLine(line.categoryId, line.plannedCents)">Editar</button>
+          </div>
+          <div class="progress-bar">
+            <div class="fill" [class]="line.status" [style.width.%]="line.percentUsed > 100 ? 100 : line.percentUsed"></div>
+          </div>
+          @if (line.differenceCents < 0) {
+            <div class="over-text text-danger">Te has pasado {{ -line.differenceCents | euros }}</div>
+          }
+        </div>
+      }
+    </div>
+  }
+}

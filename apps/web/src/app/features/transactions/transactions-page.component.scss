@@ -1,0 +1,44 @@
+.filters-card { margin-bottom: 1.5rem; }
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0 1rem;
+}
+
+.totals-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.totals-item {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.totals-item strong { font-size: 1rem; }
+
+.table-card { padding: 0; overflow-x: auto; }
+.table-card table { min-width: 640px; }
+
+.amount-col { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.actions-col { white-space: nowrap; text-align: right; }
+.actions-col button { margin-left: 0.3rem; }
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 0.3rem;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}

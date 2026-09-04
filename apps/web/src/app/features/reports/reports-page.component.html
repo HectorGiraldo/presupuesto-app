@@ -1,0 +1,108 @@
+<div class="page-header">
+  <h1>Reportes</h1>
+</div>
+
+<div class="card report-block">
+  <div class="card-header">
+    <h2>Reparto 50/30/20</h2>
+    <div class="month-nav">
+      <button type="button" (click)="prevMonth()">←</button>
+      <span class="month-label">{{ monthNames[month() - 1] }} {{ year() }}</span>
+      <button type="button" (click)="nextMonth()">→</button>
+    </div>
+  </div>
+
+  @if (loadingSplit()) {
+    <p class="text-muted">Cargando…</p>
+  } @else if (split(); as s) {
+    @if (s.incomeCents <= 0) {
+      <p class="text-muted">No hay ingresos registrados este mes.</p>
+    } @else {
+      <div class="split-bar">
+        @for (seg of splitSegments(); track seg.label) {
+          <div class="split-segment" [style.width.%]="seg.percent" [style.background]="seg.color"></div>
+        }
+      </div>
+      <div class="split-legend">
+        @for (seg of splitSegments(); track seg.label) {
+          <div class="legend-item">
+            <span class="dot" [style.background]="seg.color"></span>
+            {{ seg.label }} · {{ seg.amount | euros }} ({{ seg.percent }}%)
+          </div>
+        }
+      </div>
+      @if (s.savedCents < 0) {
+        <p class="text-danger overspend-note">⚠ Este mes has gastado {{ -s.savedCents | euros }} más de lo que has ingresado.</p>
+      }
+    }
+  }
+</div>
+
+<div class="card report-block">
+  <h2>Tendencia por categoría</h2>
+  <div class="field">
+    <label for="trend-cat">Categoría</label>
+    <select id="trend-cat" [(ngModel)]="selectedCategoryId" (ngModelChange)="onCategoryChange()">
+      <option value="">— Selecciona una categoría —</option>
+      @for (c of expenseCategories(); track c.id) { <option [value]="c.id">{{ c.name }}</option> }
+    </select>
+  </div>
+
+  @if (loadingTrend()) {
+    <p class="text-muted">Cargando…</p>
+  } @else if (trend(); as t) {
+    <p class="trend-summary">
+      Media mensual: <strong>{{ t.averageCents | euros }}</strong> · {{ trendLabel(t.trend) }}
+    </p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Mes</th><th class="num">Importe</th></tr></thead>
+        <tbody>
+          @for (p of t.points; track p.year + '-' + p.month) {
+            <tr>
+              <td>{{ monthNames[p.month - 1] }} {{ p.year }}</td>
+              <td class="num">{{ p.amountCents | euros }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+<div class="card report-block">
+  <h2>Flujo de caja / patrimonio</h2>
+  <div class="cashflow-filters">
+    <div class="field">
+      <label for="cf-from">Desde</label>
+      <input id="cf-from" type="date" [(ngModel)]="cashflowFrom" />
+    </div>
+    <div class="field">
+      <label for="cf-to">Hasta</label>
+      <input id="cf-to" type="date" [(ngModel)]="cashflowTo" />
+    </div>
+    <button class="btn btn-sm" type="button" (click)="loadCashflow()">Actualizar</button>
+  </div>
+
+  @if (loadingCashflow()) {
+    <p class="text-muted">Cargando…</p>
+  } @else if (cashflow().length === 0) {
+    <p class="text-muted">No hay movimientos en este rango.</p>
+  } @else {
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Fecha</th><th class="num">Ingresos</th><th class="num">Gastos</th><th class="num">Patrimonio</th></tr></thead>
+        <tbody>
+          @for (p of cashflow(); track p.date) {
+            <tr>
+              <td>{{ p.date | dateOnly }}</td>
+              <td class="num text-success">{{ p.incomeCents | euros }}</td>
+              <td class="num text-danger">{{ p.expenseCents | euros }}</td>
+              <td class="num"><strong>{{ p.netWorthCents | euros }}</strong></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

@@ -1,0 +1,159 @@
+<div class="page-header">
+  <h1>Deudas</h1>
+  <button class="btn" type="button" (click)="openCreate()">+ Nueva deuda</button>
+</div>
+
+@if (showForm()) {
+  <form class="card form-card" [formGroup]="form" (ngSubmit)="submit()">
+    <h2>{{ editingId() ? 'Editar deuda' : 'Nueva deuda' }}</h2>
+    <div class="form-grid">
+      <div class="field">
+        <label for="name">Nombre</label>
+        <input id="name" type="text" formControlName="name" placeholder="Hipoteca, préstamo coche…" />
+      </div>
+      <div class="field">
+        <label for="type">Tipo</label>
+        <select id="type" formControlName="type">
+          @for (t of debtTypes; track t[0]) { <option [value]="t[0]">{{ t[1] }}</option> }
+        </select>
+      </div>
+      <div class="field">
+        <label for="principalCents">Importe del préstamo</label>
+        <app-money-input formControlName="principalCents" />
+      </div>
+      <div class="field">
+        <label for="interestRate">TIN anual (%)</label>
+        <input id="interestRate" type="number" step="0.01" min="0" formControlName="interestRate" />
+      </div>
+      <div class="field">
+        <label for="monthlyPaymentCents">Cuota mensual</label>
+        <app-money-input formControlName="monthlyPaymentCents" />
+      </div>
+      <div class="field">
+        <label for="startDate">Fecha de inicio</label>
+        <input id="startDate" type="date" formControlName="startDate" />
+      </div>
+      <div class="field">
+        <label for="termMonths">Plazo en meses (opcional)</label>
+        <input id="termMonths" type="number" min="1" formControlName="termMonths" />
+      </div>
+      <div class="field">
+        <label for="accountId">Cuenta de cargo (opcional)</label>
+        <select id="accountId" formControlName="accountId">
+          <option value="">— Ninguna —</option>
+          @for (a of accounts(); track a.id) { <option [value]="a.id">{{ a.name }}</option> }
+        </select>
+      </div>
+    </div>
+    <p class="text-muted form-hint">
+      Si eliges una cuenta, cada pago que registres se descontará de su saldo y contará
+      como gasto del mes (categoría "Deudas e intereses"). Sin cuenta, el pago solo
+      actualiza el progreso de la deuda.
+    </p>
+    <div class="form-actions">
+      <button class="btn btn-secondary" type="button" (click)="cancel()">Cancelar</button>
+      <button class="btn" type="submit">Guardar</button>
+    </div>
+  </form>
+}
+
+@if (loading()) {
+  <p class="text-muted">Cargando…</p>
+} @else if (debts().length === 0) {
+  <div class="empty-state card"><p>No tienes deudas registradas.</p></div>
+} @else {
+  <div class="debts-list">
+    @for (debt of debts(); track debt.id) {
+      <div class="card debt-card">
+        <div class="debt-top">
+          <span class="debt-name">{{ debt.name }}</span>
+          <span class="badge badge-unbudgeted">{{ debt.type }}</span>
+          <div class="spacer"></div>
+          <span class="debt-balance">{{ debt.currentBalanceCents | euros }} <span class="text-muted">pendiente</span></span>
+        </div>
+        <div class="progress-bar">
+          <div class="fill ok" [style.width.%]="debt.progressPercent"></div>
+        </div>
+        <div class="debt-meta text-muted">
+          {{ debt.progressPercent }}% pagado · TIN {{ debt.interestRate }}% · cuota {{ debt.monthlyPaymentCents | euros }}/mes
+          @if (debt.remainingMonths) { · quedan ~{{ debt.remainingMonths }} meses }
+          @if (accountName(debt.accountId); as accName) { · cargo en {{ accName }} }
+          @else { · sin cuenta de cargo }
+        </div>
+
+        @if (payingId() === debt.id) {
+          <form class="contribution-form" [formGroup]="paymentForm" (ngSubmit)="submitPayment(debt)">
+            <app-money-input formControlName="amountCents" />
+            <input type="date" formControlName="date" />
+            <button class="btn btn-sm" type="submit">Registrar</button>
+            <button class="btn btn-secondary btn-sm" type="button" (click)="cancelPay()">✕</button>
+          </form>
+        } @else {
+          <div class="debt-actions">
+            <button class="btn btn-sm" type="button" (click)="openPay(debt)">+ Registrar pago</button>
+            <button class="btn btn-secondary btn-sm" type="button" (click)="toggleHistory(debt)">
+              {{ historyId() === debt.id ? 'Ocultar' : 'Ver' }} historial de pagos
+            </button>
+            <button class="btn btn-secondary btn-sm" type="button" (click)="toggleSchedule(debt)">
+              {{ expandedId() === debt.id ? 'Ocultar' : 'Ver' }} cuadro de amortización
+            </button>
+            <button class="btn btn-secondary btn-sm" type="button" (click)="openEdit(debt)">Editar</button>
+            <button class="btn btn-danger btn-sm" type="button" (click)="remove(debt)">Eliminar</button>
+          </div>
+        }
+
+        @if (historyId() === debt.id) {
+          <div class="schedule-wrap">
+            @if (paymentHistory().length === 0) {
+              <p class="text-muted">Todavía no has registrado ningún pago.</p>
+            } @else {
+              <table>
+                <thead><tr><th>Fecha</th><th>Importe</th><th>Capital</th><th>Intereses</th><th>Notas</th></tr></thead>
+                <tbody>
+                  @for (p of paymentHistory(); track p.id) {
+                    <tr>
+                      <td>{{ p.date | dateOnly }}</td>
+                      <td>{{ p.amountCents | euros }}</td>
+                      <td>{{ p.principalCents | euros }}</td>
+                      <td>{{ p.interestCents | euros }}</td>
+                      <td class="text-muted">{{ p.notes || '—' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          </div>
+        }
+
+        @if (expandedId() === debt.id && schedule(); as s) {
+          <div class="schedule-wrap">
+            <p class="text-muted schedule-summary">
+              Total intereses: <strong>{{ s.totalInterestCents | euros }}</strong> ·
+              Total pagado: <strong>{{ s.totalPaidCents | euros }}</strong> ·
+              Fin: <strong>{{ s.payoffDate | dateOnly }}</strong>
+            </p>
+            <div class="schedule-table">
+              <table>
+                <thead>
+                  <tr><th>#</th><th>Fecha</th><th>Cuota</th><th>Capital</th><th>Intereses</th><th>Pendiente</th></tr>
+                </thead>
+                <tbody>
+                  @for (row of s.rows; track row.number) {
+                    <tr>
+                      <td>{{ row.number }}</td>
+                      <td>{{ row.date | dateOnly }}</td>
+                      <td>{{ row.paymentCents | euros }}</td>
+                      <td>{{ row.principalCents | euros }}</td>
+                      <td>{{ row.interestCents | euros }}</td>
+                      <td>{{ row.remainingCents | euros }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+}

@@ -1,0 +1,27 @@
+{
+  "name": "presupuesto-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "App de presupuesto personal mensual y anual",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build:shared": "npm run build -w @presupuesto/shared",
+    "start:api": "npm run start:dev -w @presupuesto/api",
+    "start:web": "npm start -w @presupuesto/web",
+    "dev": "npm run build:shared && concurrently -n api,web -c blue,green \"npm run start:api\" \"npm run start:web\"",
+    "build": "npm run build:shared && npm run build -w @presupuesto/api && npm run build -w @presupuesto/web",
+    "db:up": "docker compose up -d postgres",
+    "db:down": "docker compose down",
+    "migration:run": "npm run migration:run -w @presupuesto/api",
+    "migration:generate": "npm run migration:generate -w @presupuesto/api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

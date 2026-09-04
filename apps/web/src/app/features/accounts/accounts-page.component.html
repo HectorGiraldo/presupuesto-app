@@ -1,0 +1,66 @@
+<div class="page-header">
+  <div>
+    <h1>Cuentas</h1>
+    <p class="text-muted">Saldo total: <strong [class.text-success]="totalBalance() >= 0" [class.text-danger]="totalBalance() < 0">{{ totalBalance() | euros }}</strong></p>
+  </div>
+  <button class="btn" type="button" (click)="openCreate()">+ Nueva cuenta</button>
+</div>
+
+@if (showForm()) {
+  <form class="card form-card" [formGroup]="form" (ngSubmit)="submit()">
+    <h2>{{ editingId() ? 'Editar cuenta' : 'Nueva cuenta' }}</h2>
+    <div class="form-grid">
+      <div class="field">
+        <label for="name">Nombre</label>
+        <input id="name" type="text" formControlName="name" placeholder="Cuenta corriente" />
+      </div>
+      <div class="field">
+        <label for="type">Tipo</label>
+        <select id="type" formControlName="type">
+          @for (t of accountTypes; track t[0]) {
+            <option [value]="t[0]">{{ t[1] }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label for="balance">Saldo inicial</label>
+        <app-money-input formControlName="initialBalanceCents" />
+      </div>
+      <div class="field">
+        <label for="color">Color</label>
+        <input id="color" type="color" formControlName="color" />
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" type="button" (click)="cancel()">Cancelar</button>
+      <button class="btn" type="submit">Guardar</button>
+    </div>
+  </form>
+}
+
+@if (loading()) {
+  <p class="text-muted">Cargando…</p>
+} @else if (accounts().length === 0) {
+  <div class="empty-state card">
+    <p>Todavía no tienes cuentas.</p>
+    <button class="btn" type="button" (click)="openCreate()">Crear la primera cuenta</button>
+  </div>
+} @else {
+  <div class="accounts-grid">
+    @for (account of accounts(); track account.id) {
+      <div class="card account-card" [style.borderLeftColor]="account.color">
+        <div class="account-info">
+          <div class="account-name">{{ account.name }}</div>
+          <div class="account-type text-muted">{{ account.type }}</div>
+        </div>
+        <div class="account-balance" [class.text-success]="(account.currentBalanceCents ?? 0) >= 0" [class.text-danger]="(account.currentBalanceCents ?? 0) < 0">
+          {{ account.currentBalanceCents | euros }}
+        </div>
+        <div class="account-actions">
+          <button class="btn btn-secondary btn-sm" type="button" (click)="openEdit(account)">Editar</button>
+          <button class="btn btn-danger btn-sm" type="button" (click)="remove(account)">Eliminar</button>
+        </div>
+      </div>
+    }
+  </div>
+}

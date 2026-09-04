@@ -1,0 +1,115 @@
+<div class="page-header">
+  <h1>Recurrentes</h1>
+  <button class="btn" type="button" (click)="openCreate()">+ Nueva regla</button>
+</div>
+
+@if (showForm()) {
+  <form class="card form-card" [formGroup]="form" (ngSubmit)="submit()">
+    <h2>{{ editingId() ? 'Editar regla' : 'Nueva regla recurrente' }}</h2>
+    <div class="form-grid">
+      <div class="field">
+        <label for="type">Tipo</label>
+        <select id="type" formControlName="type">
+          <option [value]="TransactionType.EXPENSE">Gasto</option>
+          <option [value]="TransactionType.INCOME">Ingreso</option>
+          <option [value]="TransactionType.TRANSFER">Traspaso</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="amount">Importe</label>
+        <app-money-input formControlName="amountCents" />
+      </div>
+      <div class="field">
+        <label for="description">Descripción</label>
+        <input id="description" type="text" formControlName="description" placeholder="Alquiler, Netflix…" />
+      </div>
+      <div class="field">
+        <label for="accountId">{{ isTransfer() ? 'Cuenta origen' : 'Cuenta' }}</label>
+        <select id="accountId" formControlName="accountId">
+          @for (a of accounts(); track a.id) { <option [value]="a.id">{{ a.name }}</option> }
+        </select>
+      </div>
+      @if (isTransfer()) {
+        <div class="field">
+          <label for="toAccountId">Cuenta destino</label>
+          <select id="toAccountId" formControlName="toAccountId">
+            <option value="">— Selecciona —</option>
+            @for (a of accounts(); track a.id) { <option [value]="a.id">{{ a.name }}</option> }
+          </select>
+        </div>
+      } @else {
+        <div class="field">
+          <label for="categoryId">Categoría</label>
+          <select id="categoryId" formControlName="categoryId">
+            <option value="">— Selecciona —</option>
+            @for (c of categoryOptions(); track c.id) { <option [value]="c.id">{{ c.name }}</option> }
+          </select>
+        </div>
+      }
+      <div class="field">
+        <label for="frequency">Frecuencia</label>
+        <select id="frequency" formControlName="frequency">
+          @for (f of frequencies; track f[0]) { <option [value]="f[0]">{{ f[1] }}</option> }
+        </select>
+      </div>
+      @if (showDayOfMonth()) {
+        <div class="field">
+          <label for="dayOfMonth">Día del mes</label>
+          <input id="dayOfMonth" type="number" min="1" max="31" formControlName="dayOfMonth" />
+        </div>
+      }
+      <div class="field">
+        <label for="startDate">Fecha de inicio</label>
+        <input id="startDate" type="date" formControlName="startDate" />
+      </div>
+      <div class="field">
+        <label for="endDate">Fecha de fin (opcional)</label>
+        <input id="endDate" type="date" formControlName="endDate" />
+      </div>
+    </div>
+    <div class="checkbox-field">
+      <input id="autoGenerate" type="checkbox" formControlName="autoGenerate" />
+      <label for="autoGenerate">Generar el movimiento automáticamente (si no, solo avisa para confirmarlo)</label>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" type="button" (click)="cancel()">Cancelar</button>
+      <button class="btn" type="submit">Guardar</button>
+    </div>
+  </form>
+}
+
+@if (loading()) {
+  <p class="text-muted">Cargando…</p>
+} @else if (rules().length === 0) {
+  <div class="empty-state card"><p>No tienes gastos o ingresos recurrentes configurados.</p></div>
+} @else {
+  <div class="rules-list">
+    @for (rule of rules(); track rule.id) {
+      <div class="card rule-card" [class.inactive]="!rule.active">
+        <div class="rule-top">
+          <span class="rule-desc">{{ rule.description }}</span>
+          <span class="badge badge-ok">{{ frequencyLabels[rule.frequency] }}</span>
+          @if (!rule.autoGenerate) { <span class="badge badge-warning">manual</span> }
+          @if (!rule.active) { <span class="badge badge-unbudgeted">inactiva</span> }
+          <div class="spacer"></div>
+          <span class="rule-amount"
+                [class.text-success]="rule.type === TransactionType.INCOME"
+                [class.text-danger]="rule.type === TransactionType.EXPENSE">
+            {{ rule.amountCents | euros }}
+          </span>
+        </div>
+        <div class="rule-meta text-muted">
+          {{ rule.account?.name }}
+          @if (rule.category?.name) { · {{ rule.category?.name }} }
+          @if (rule.nextDate) { · próxima: {{ rule.nextDate | dateOnly }} }
+        </div>
+        <div class="rule-actions">
+          <button class="btn btn-secondary btn-sm" type="button" (click)="generateNow(rule)">Generar ahora</button>
+          <button class="btn btn-secondary btn-sm" type="button" (click)="toggleActive(rule)">{{ rule.active ? 'Desactivar' : 'Activar' }}</button>
+          <button class="btn btn-secondary btn-sm" type="button" (click)="openEdit(rule)">Editar</button>
+          <button class="btn btn-danger btn-sm" type="button" (click)="remove(rule)">Eliminar</button>
+        </div>
+      </div>
+    }
+  </div>
+}

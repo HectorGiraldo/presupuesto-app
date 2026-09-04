@@ -1,0 +1,39 @@
+.goals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.goal-card { border-left: 4px solid var(--color-success); }
+
+.goal-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.goal-name { font-weight: 600; }
+.goal-pct { font-weight: 700; color: var(--color-success); }
+
+.goal-amounts { font-size: 0.85rem; margin-top: 0.4rem; }
+.goal-meta { font-size: 0.78rem; margin-top: 0.3rem; }
+
+.goal-actions { display: flex; gap: 0.4rem; margin-top: 0.9rem; }
+
+.contribution-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.9rem;
+  align-items: center;
+}
+/* min-width evita que el importe se aplaste a casi 0px en tarjetas estrechas
+   (una sola meta en el grid auto-fill deja la tarjeta en su ancho mínimo);
+   flex-wrap manda la fecha y los botones a otra línea si no caben. */
+.contribution-form app-money-input { flex: 1 1 110px; min-width: 110px; }
+.contribution-form input[type="date"] {
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  flex: 1 1 130px;
+  min-width: 130px;
+}
