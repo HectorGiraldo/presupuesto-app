@@ -29,4 +29,11 @@ COPY apps/api/docker-entrypoint.sh apps/api/docker-entrypoint.sh
 RUN chmod +x apps/api/docker-entrypoint.sh
 
 EXPOSE 3000
+
+# wget viene de BusyBox en la imagen alpine (no hay curl). GET /api/health es
+# público (sin token) y no toca la BD. Coolify lee este estado si no defines
+# healthcheck en su UI.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD wget -q -O /dev/null "http://127.0.0.1:${PORT:-3000}/api/health" || exit 1
+
 ENTRYPOINT ["apps/api/docker-entrypoint.sh"]

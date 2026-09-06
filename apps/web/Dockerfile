@@ -28,3 +28,8 @@ COPY --from=build /repo/apps/web/dist/web/browser /usr/share/nginx/html
 COPY apps/web/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
+
+# wget viene de BusyBox en la imagen alpine (no hay curl). Comprueba que nginx
+# responde 200 a "/". Coolify lee este estado si no defines healthcheck en su UI.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget -q -O /dev/null http://127.0.0.1:80/ || exit 1

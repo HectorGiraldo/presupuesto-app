@@ -15,6 +15,7 @@ import { CategoriesModule } from './modules/categories/categories.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { DebtsModule } from './modules/debts/debts.module';
 import { GoalsModule } from './modules/goals/goals.module';
+import { HealthModule } from './modules/health/health.module';
 import { RecurringModule } from './modules/recurring/recurring.module';
 import { ReportsModule } from './modules/reports/reports.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
@@ -49,6 +50,7 @@ import { UsersModule } from './modules/users/users.module';
     ReportsModule,
     DashboardModule,
     BackupModule,
+    HealthModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
