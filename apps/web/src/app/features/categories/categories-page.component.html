@@ -62,9 +62,11 @@
           @if (cat.essential) { <span class="badge badge-ok">esencial</span> }
           @if (cat.archived) { <span class="badge badge-unbudgeted">archivada</span> }
           <div class="spacer"></div>
-          <button class="btn btn-secondary btn-sm" type="button" (click)="openCreate(cat)">+ subcategoría</button>
-          <button class="btn btn-secondary btn-sm" type="button" (click)="openEdit(cat)">Editar</button>
-          <button class="btn btn-danger btn-sm" type="button" (click)="remove(cat)">Eliminar</button>
+          <div class="cat-actions">
+            <button class="btn btn-secondary btn-sm" type="button" (click)="openCreate(cat)">+ subcategoría</button>
+            <button class="btn btn-secondary btn-sm" type="button" (click)="openEdit(cat)">Editar</button>
+            <button class="btn btn-danger btn-sm" type="button" (click)="remove(cat)">Eliminar</button>
+          </div>
         </div>
         @if (cat.children?.length) {
           <div class="children">
@@ -75,8 +77,10 @@
                 @if (child.essential) { <span class="badge badge-ok">esencial</span> }
                 @if (child.archived) { <span class="badge badge-unbudgeted">archivada</span> }
                 <div class="spacer"></div>
-                <button class="btn btn-secondary btn-sm" type="button" (click)="openEdit(child)">Editar</button>
-                <button class="btn btn-danger btn-sm" type="button" (click)="remove(child)">Eliminar</button>
+                <div class="cat-actions">
+                  <button class="btn btn-secondary btn-sm" type="button" (click)="openEdit(child)">Editar</button>
+                  <button class="btn btn-danger btn-sm" type="button" (click)="remove(child)">Eliminar</button>
+                </div>
               </div>
             }
           </div>

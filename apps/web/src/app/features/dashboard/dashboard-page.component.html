@@ -75,7 +75,7 @@
     <div class="card">
       <h2>Recurrentes pendientes</h2>
       @if (s.pendingRecurring.length === 0) {
-        <p class="text-muted">No hay nada pendiente de confirmar. 🎉</p>
+        <p class="text-muted">No hay nada pendiente de confirmar.</p>
       } @else {
         <div class="pending-list">
           @for (p of s.pendingRecurring; track p.ruleId) {

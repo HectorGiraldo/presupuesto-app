@@ -1,15 +1,21 @@
 <div class="shell" [class.menu-open]="menuOpen()">
   <header class="topbar">
-    <button class="menu-btn" type="button" (click)="toggleMenu()" aria-label="Abrir menú">☰</button>
-    <span class="brand">💰 Mi Presupuesto</span>
+    <img class="brand-mark" src="logo.svg" alt="" />
+    <span class="brand">Mi Presupuesto</span>
+    <button class="topbar-add" type="button" [routerLink]="'/transactions'" aria-label="Nuevo movimiento">
+      <span class="ic" [innerHTML]="addIcon"></span>
+    </button>
   </header>
 
   <aside class="sidebar">
-    <div class="sidebar-brand">💰 Mi Presupuesto</div>
+    <div class="sidebar-brand">
+      <img class="brand-mark" src="logo.svg" alt="" />
+      <span>Mi Presupuesto</span>
+    </div>
     <nav>
       @for (item of navItems; track item.path) {
         <a [routerLink]="item.path" routerLinkActive="active" (click)="closeMenu()">
-          <span class="icon">{{ item.icon }}</span>
+          <span class="icon" [innerHTML]="item.icon"></span>
           <span>{{ item.label }}</span>
         </a>
       }
@@ -25,11 +31,45 @@
 
   @if (menuOpen()) {
     <div class="backdrop" (click)="closeMenu()"></div>
+    <div class="more-sheet">
+      <div class="more-grip"></div>
+      <nav class="more-grid">
+        @for (item of navItems; track item.path) {
+          <a [routerLink]="item.path" routerLinkActive="active" (click)="closeMenu()">
+            <span class="icon" [innerHTML]="item.icon"></span>
+            <span>{{ item.label }}</span>
+          </a>
+        }
+      </nav>
+      <button type="button" class="logout-btn" (click)="logout()">Cerrar sesión</button>
+    </div>
   }
 
   <main class="content">
     <router-outlet />
   </main>
+
+  <nav class="bottomnav">
+    <a class="bn-item" [routerLink]="'/dashboard'" routerLinkActive="active">
+      <span class="ic" [innerHTML]="navItems[0].icon"></span>
+      <span class="bn-label">Resumen</span>
+    </a>
+    <a class="bn-item" [routerLink]="'/transactions'" routerLinkActive="active">
+      <span class="ic" [innerHTML]="navItems[1].icon"></span>
+      <span class="bn-label">Movim.</span>
+    </a>
+    <a class="bn-fab" [routerLink]="'/transactions'" aria-label="Nuevo movimiento">
+      <span class="ic" [innerHTML]="addIcon"></span>
+    </a>
+    <a class="bn-item" [routerLink]="'/budget'" routerLinkActive="active">
+      <span class="ic" [innerHTML]="navItems[2].icon"></span>
+      <span class="bn-label">Presup.</span>
+    </a>
+    <button class="bn-item" type="button" (click)="toggleMenu()" [class.active]="menuOpen()">
+      <span class="ic" [innerHTML]="moreIcon"></span>
+      <span class="bn-label">Más</span>
+    </button>
+  </nav>
 </div>
 
 <app-toasts />

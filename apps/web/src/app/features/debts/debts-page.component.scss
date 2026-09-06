@@ -8,11 +8,11 @@
   gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
-.debt-name { font-weight: 600; }
+.debt-name { font-weight: 700; font-size: 1rem; }
 .spacer { flex: 1; }
-.debt-balance { font-weight: 700; }
+.debt-balance { font-weight: 800; font-family: var(--font-mono); }
 
-.debt-meta { font-size: 0.82rem; margin-top: 0.4rem; }
+.debt-meta { font-size: 0.82rem; margin-top: 0.4rem; color: var(--color-text-muted); }
 .debt-actions { display: flex; gap: 0.4rem; margin-top: 0.9rem; flex-wrap: wrap; }
 
 .contribution-form {
@@ -26,23 +26,34 @@
    flex-wrap manda la fecha y los botones a otra línea si no caben. */
 .contribution-form app-money-input { flex: 1 1 110px; min-width: 110px; }
 .contribution-form input[type="date"] {
-  padding: 0.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
+  padding: 0.55rem;
+  border: 1.5px solid var(--color-line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
   flex: 1 1 130px;
   min-width: 130px;
 }
 
 .schedule-wrap {
   margin-top: 1rem;
-  border-top: 1px solid var(--color-border);
+  border-top: 1.5px solid var(--color-line-strong);
   padding-top: 1rem;
 }
 .schedule-summary { margin-bottom: 0.6rem; font-size: 0.85rem; }
+.schedule-summary strong { font-family: var(--font-mono); }
 .schedule-table {
   max-height: 320px;
-  overflow-y: auto;
-  overflow-x: auto;
+  overflow: auto;                    /* scroll horizontal y vertical dentro de la tarjeta */
+  border: 1.5px solid var(--color-line-strong);
+  border-radius: var(--radius-sm);
 }
-.schedule-table table { font-size: 0.82rem; }
-.schedule-table th { position: sticky; top: 0; background: var(--color-surface); }
+.schedule-table table { font-size: 0.8rem; min-width: max-content; }
+.schedule-table th,
+.schedule-table td { padding: 0.5rem 0.65rem; white-space: nowrap; }
+.schedule-table .num { text-align: right; }
+.schedule-table th {
+  position: sticky;
+  top: 0;
+  background: var(--color-surface);
+  box-shadow: inset 0 -1.5px 0 var(--color-line-strong);
+}

@@ -71,8 +71,10 @@
             @if (line.essential) { <span class="badge badge-ok">esencial</span> }
             <span class="badge" [class]="'badge-' + line.status">{{ statusLabel(line.status) }}</span>
             <div class="spacer"></div>
-            <span class="line-amounts">{{ line.actualCents | euros }} / {{ line.plannedCents | euros }}</span>
-            <button class="btn btn-secondary btn-sm" type="button" (click)="editLine(line.categoryId, line.plannedCents)">Editar</button>
+            <div class="line-meta">
+              <span class="line-amounts">{{ line.actualCents | euros }} / {{ line.plannedCents | euros }}</span>
+              <button class="btn btn-secondary btn-sm" type="button" (click)="editLine(line.categoryId, line.plannedCents)">Editar</button>
+            </div>
           </div>
           <div class="progress-bar">
             <div class="fill" [class]="line.status" [style.width.%]="line.percentUsed > 100 ? 100 : line.percentUsed"></div>

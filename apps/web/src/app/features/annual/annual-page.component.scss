@@ -1,29 +1,43 @@
 .summary-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
+  gap: 0.85rem;
   margin-bottom: 1.5rem;
 }
-.summary-value { font-size: 1.25rem; font-weight: 700; }
+.summary-item .text-muted {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.summary-value {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 0.3rem;
+}
 
 .table-card { margin-bottom: 1.5rem; overflow-x: auto; }
 .table-card h2 { font-size: 1.05rem; }
 
 table { min-width: 720px; }
-.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.row-label { font-weight: 500; white-space: nowrap; }
+.num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.row-label { font-weight: 700; white-space: nowrap; }
 
 .heatmap-hint { font-size: 0.82rem; margin: -0.3rem 0 0.75rem; }
 .table-scroll { overflow-x: auto; }
 table.heatmap { min-width: 900px; }
 table.heatmap th, table.heatmap td { padding: 0.4rem 0.55rem; }
 .heat-cell { border-radius: 4px; font-size: 0.8rem; }
-.row-total { font-weight: 600; }
+.row-total { font-weight: 700; }
 
 .dot {
   display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  border: 1.5px solid var(--color-line-strong);
   margin-right: 0.4rem;
+  vertical-align: middle;
 }

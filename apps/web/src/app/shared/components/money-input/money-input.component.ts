@@ -33,16 +33,18 @@ import { parseAmountToCents, toEuros } from '@presupuesto/shared';
     }
     input {
       width: 100%;
-      padding: 0.55rem 0.7rem;
+      padding: 0.6rem 0.7rem;
       padding-right: 1.8rem;
-      border: 1px solid var(--color-border);
-      border-radius: 8px;
+      border: 1.5px solid var(--color-line-strong);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      color: var(--color-text);
       text-align: right;
       font-variant-numeric: tabular-nums;
     }
     input:focus {
-      outline: 2px solid var(--color-primary);
-      outline-offset: -1px;
+      outline: none;
+      box-shadow: var(--shadow-sm);
     }
     .suffix {
       position: absolute;

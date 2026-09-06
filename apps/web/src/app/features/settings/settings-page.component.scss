@@ -1,5 +1,6 @@
 .settings-block { margin-bottom: 1.5rem; max-width: 560px; }
 .settings-block h2 { font-size: 1.05rem; }
+.settings-block p strong { font-weight: 700; }
 
 .backup-actions {
   display: flex;
@@ -7,9 +8,15 @@
   margin: 1rem 0;
   flex-wrap: wrap;
 }
+.backup-actions .btn { flex: 1 1 auto; }
 
 .warning-note {
   font-size: 0.82rem;
+  font-weight: 600;
   color: var(--color-warning);
-  margin-top: 0.75rem;
+  background: var(--color-warning-soft);
+  border: 1.5px solid var(--color-line-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.75rem;
+  margin-top: 0.9rem;
 }

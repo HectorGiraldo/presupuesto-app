@@ -4,9 +4,24 @@
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
-.kpi-label { font-size: 0.82rem; color: var(--color-text-muted); margin-bottom: 0.3rem; }
-.kpi-value { font-size: 1.5rem; font-weight: 700; }
-.kpi-sub { font-size: 0.78rem; margin-top: 0.2rem; }
+.kpi-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  margin-bottom: 0.35rem;
+}
+.kpi-value { font-family: var(--font-mono); font-size: 1.55rem; font-weight: 700; letter-spacing: -0.02em; }
+.kpi-sub { font-size: 0.78rem; margin-top: 0.3rem; }
+
+/* La primera tarjeta (Saldo total) es el "héroe" oscuro, como en el diseño. */
+.kpi-grid .kpi:first-child {
+  background: var(--color-text);
+  color: var(--color-bg);
+  box-shadow: var(--shadow-accent);
+}
+.kpi-grid .kpi:first-child .kpi-label { color: #b7b2a3; }
 
 .dashboard-grid {
   display: grid;
@@ -19,21 +34,22 @@
   justify-content: space-between;
   align-items: center;
 }
-.card-header h2 { margin: 0; }
-.card-header a { font-size: 0.85rem; }
+.card-header h2 { margin: 0; font-size: 1.05rem; }
+.card-header a { font-size: 0.82rem; font-weight: 700; }
 
 .budget-lines, .top-categories, .pending-list, .accounts-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 0.75rem;
+  gap: 0.85rem;
+  margin-top: 0.85rem;
 }
 
 .budget-line-top {
   display: flex;
   justify-content: space-between;
   font-size: 0.85rem;
-  margin-bottom: 0.3rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
 }
 
 .top-cat-row, .account-row {
@@ -42,15 +58,16 @@
   gap: 0.5rem;
   font-size: 0.9rem;
 }
-.top-cat-name, .account-name { flex: 1; }
-.top-cat-amount { font-weight: 600; }
-.top-cat-pct { width: 3rem; text-align: right; font-size: 0.8rem; }
-.account-balance { font-weight: 600; }
+.top-cat-name, .account-name { flex: 1; font-weight: 600; }
+.top-cat-amount { font-weight: 700; }
+.top-cat-pct { width: 3rem; text-align: right; font-size: 0.8rem; color: var(--color-text-muted); }
+.account-balance { font-weight: 700; font-family: var(--font-mono); }
 
 .dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  border: 1.5px solid var(--color-line-strong);
   flex-shrink: 0;
 }
 
@@ -58,10 +75,10 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding-bottom: 0.6rem;
+  padding-bottom: 0.7rem;
   border-bottom: 1px solid var(--color-border);
 }
 .pending-row:last-child { border-bottom: none; padding-bottom: 0; }
-.pending-desc { font-weight: 500; font-size: 0.9rem; }
-.pending-meta { font-size: 0.78rem; }
-.pending-amount { font-weight: 600; margin-left: auto; }
+.pending-desc { font-weight: 700; font-size: 0.9rem; }
+.pending-meta { font-size: 0.76rem; }
+.pending-amount { font-weight: 700; margin-left: auto; font-family: var(--font-mono); }

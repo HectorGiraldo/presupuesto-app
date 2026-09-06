@@ -1,7 +1,13 @@
 <div class="auth-page">
+  <div class="auth-hero">
+    <img class="auth-mark" src="logo.svg" alt="" />
+    <div class="auth-eyebrow">Hector Giraldo</div>
+    <h1>Mi Presupuesto</h1>
+    <p class="subtitle">Crea tu cuenta y empieza a controlar tus finanzas.</p>
+  </div>
+
   <form class="card auth-card" [formGroup]="form" (ngSubmit)="submit()">
-    <h1>💰 Mi Presupuesto</h1>
-    <p class="subtitle">Crea tu cuenta y empieza a controlar tus finanzas</p>
+    <h2>Crear cuenta</h2>
 
     @if (errorMessage(); as msg) {
       <div class="alert">{{ msg }}</div>

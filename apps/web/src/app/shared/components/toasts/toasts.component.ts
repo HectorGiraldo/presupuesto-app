@@ -18,23 +18,33 @@ import { NotificationsService } from '../../../core/notifications.service';
       position: fixed;
       bottom: 1.25rem;
       right: 1.25rem;
+      left: 1.25rem;
       display: flex;
       flex-direction: column;
+      align-items: flex-end;
       gap: 0.5rem;
       z-index: 100;
-      max-width: 320px;
+      pointer-events: none;
     }
     .toast {
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
+      pointer-events: auto;
+      max-width: 340px;
+      padding: 0.7rem 0.95rem;
+      border: 1.5px solid var(--color-line-strong);
+      border-radius: var(--radius-sm);
       color: #fff;
       font-size: 0.88rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      font-weight: 600;
+      box-shadow: var(--shadow);
       cursor: pointer;
     }
-    .toast-success { background: #10b981; }
-    .toast-error { background: #ef4444; }
-    .toast-info { background: #334155; }
+    .toast-success { background: var(--color-success); }
+    .toast-error { background: var(--color-danger); }
+    .toast-info { background: var(--color-text); }
+
+    @media (max-width: 860px) {
+      .toasts { bottom: calc(var(--bottomnav-h) + 1rem + env(safe-area-inset-bottom)); }
+    }
   `],
 })
 export class ToastsComponent {

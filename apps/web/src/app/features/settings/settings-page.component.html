@@ -19,16 +19,16 @@
 
   <div class="backup-actions">
     <button class="btn btn-secondary" type="button" (click)="exportBackup()" [disabled]="exporting()">
-      {{ exporting() ? 'Exportando…' : '⬇ Exportar datos' }}
+      {{ exporting() ? 'Exportando…' : 'Exportar datos' }}
     </button>
     <button class="btn btn-secondary" type="button" (click)="triggerImport()" [disabled]="importing()">
-      {{ importing() ? 'Importando…' : '⬆ Restaurar copia de seguridad' }}
+      {{ importing() ? 'Importando…' : 'Restaurar copia de seguridad' }}
     </button>
     <input #fileInput type="file" accept="application/json" hidden (change)="onFileSelected($event)" />
   </div>
 
   <p class="warning-note">
-    ⚠ Restaurar una copia de seguridad <strong>sustituye por completo</strong> los datos actuales.
+    Restaurar una copia de seguridad <strong>sustituye por completo</strong> los datos actuales.
     Exporta primero si quieres conservar lo que tienes ahora.
   </p>
 </div>

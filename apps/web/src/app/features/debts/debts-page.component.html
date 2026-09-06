@@ -107,20 +107,22 @@
             @if (paymentHistory().length === 0) {
               <p class="text-muted">Todavía no has registrado ningún pago.</p>
             } @else {
-              <table>
-                <thead><tr><th>Fecha</th><th>Importe</th><th>Capital</th><th>Intereses</th><th>Notas</th></tr></thead>
-                <tbody>
-                  @for (p of paymentHistory(); track p.id) {
-                    <tr>
-                      <td>{{ p.date | dateOnly }}</td>
-                      <td>{{ p.amountCents | euros }}</td>
-                      <td>{{ p.principalCents | euros }}</td>
-                      <td>{{ p.interestCents | euros }}</td>
-                      <td class="text-muted">{{ p.notes || '—' }}</td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
+              <div class="schedule-table">
+                <table>
+                  <thead><tr><th>Fecha</th><th class="num">Importe</th><th class="num">Capital</th><th class="num">Intereses</th><th>Notas</th></tr></thead>
+                  <tbody>
+                    @for (p of paymentHistory(); track p.id) {
+                      <tr>
+                        <td>{{ p.date | dateOnly }}</td>
+                        <td class="num">{{ p.amountCents | euros }}</td>
+                        <td class="num">{{ p.principalCents | euros }}</td>
+                        <td class="num">{{ p.interestCents | euros }}</td>
+                        <td class="text-muted">{{ p.notes || '—' }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
             }
           </div>
         }

@@ -11,35 +11,43 @@
 }
 .card-header h2 { margin: 0; }
 
-/* Barra apilada: segmentos con un hueco de 2px de superficie entre ellos,
-   igual que separa segmentos apilados/barras adyacentes cualquier gráfico de la skill. */
+/* Barra apilada: segmentos separados por un hueco de 2px, sobre el fondo papel. */
 .split-bar {
   display: flex;
-  height: 28px;
-  border-radius: 6px;
+  height: 30px;
+  border: 1.5px solid var(--color-line-strong);
+  border-radius: 8px;
   overflow: hidden;
   gap: 2px;
-  background: var(--color-bg);
-  margin-top: 0.75rem;
+  background: var(--color-line-strong);
+  margin-top: 0.85rem;
 }
 .split-segment { height: 100%; min-width: 2px; }
 
 .split-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.25rem;
+  gap: 0.9rem 1.25rem;
   margin-top: 0.9rem;
   font-size: 0.85rem;
+  font-weight: 600;
 }
-.legend-item { display: flex; align-items: center; gap: 0.4rem; }
-.dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.legend-item { display: flex; align-items: center; gap: 0.45rem; }
+.dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  border: 1.5px solid var(--color-line-strong);
+  flex-shrink: 0;
+}
 
-.overspend-note { margin-top: 0.9rem; font-size: 0.85rem; }
+.overspend-note { margin-top: 0.9rem; font-size: 0.85rem; font-weight: 700; }
 
 .trend-summary { font-size: 0.9rem; margin: 0.5rem 0 0.75rem; }
+.trend-summary strong { font-family: var(--font-mono); }
 
 .table-scroll { overflow-x: auto; }
-.num { text-align: right; font-variant-numeric: tabular-nums; }
+.num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 
 .cashflow-filters {
   display: flex;
