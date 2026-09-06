@@ -1,0 +1,201 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+  <style>
+    :root{
+      --paper:#F7F5EF; --card:#FFFFFF; --ink:#16140F; --ink-2:#5C594E; --ink-3:#8B8779;
+      --line:#DEDAD0; --line-2:#E7E4DA; --signal:#FF4D00; --signal-soft:#FFE4D8;
+      --success:#0E9F6E; --success-soft:#DCF3EA; --dot:#E3E0D5;
+      --ochre:#B27A17; --ochre-soft:#F6EBD5; --neutral-soft:#EFEAE0;
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;font-family:'Instrument Sans',system-ui,sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;}
+    .dsp{font-family:'Bricolage Grotesque','Instrument Sans',system-ui,sans-serif;}
+    .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums;letter-spacing:-.03em;}
+    a{color:var(--signal);text-decoration:none;} a:hover{color:#E04400;}
+    .screen{width:390px;min-height:844px;background:var(--paper);
+      background-image:radial-gradient(var(--dot) 1.1px,transparent 1.1px);background-size:22px 22px;
+      display:flex;flex-direction:column;overflow:hidden;}
+    .card{background:var(--card);border:1.5px solid var(--ink);border-radius:14px;box-shadow:3px 3px 0 0 var(--ink);}
+    .muted{color:var(--ink-2);}
+
+    .head{display:flex;align-items:flex-end;justify-content:space-between;padding:22px 20px 10px;}
+    .brand{display:flex;align-items:center;gap:8px;}
+    .brand img{width:20px;height:auto;display:block;}
+    .head h1{margin:3px 0 0;font-size:23px;font-weight:800;letter-spacing:-.02em;}
+    .mn{display:flex;align-items:center;gap:6px;}
+    .mn button{width:30px;height:30px;border-radius:9px;border:1.5px solid var(--ink);background:var(--card);display:flex;align-items:center;justify-content:center;}
+    .mn button svg{width:14px;height:14px;stroke:var(--ink);}
+    .mn .lbl{font-size:12px;font-weight:700;min-width:66px;text-align:center;}
+
+    .body{flex:1;display:flex;flex-direction:column;gap:13px;padding:8px 20px 26px;}
+
+    .gauge{padding:18px;display:flex;align-items:center;gap:16px;}
+    .ring{position:relative;width:116px;height:116px;flex-shrink:0;}
+    .ring svg{transform:rotate(-90deg);}
+    .ring .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+    .ring .pct{font-size:24px;font-weight:800;}
+    .ring .cap{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;}
+    .legend{flex:1;display:flex;flex-direction:column;gap:11px;}
+    .legend .li{display:flex;align-items:baseline;justify-content:space-between;}
+    .legend .k{font-size:12px;font-weight:600;color:var(--ink-2);display:flex;align-items:center;gap:7px;}
+    .legend .k i{width:9px;height:9px;border-radius:2px;border:1.5px solid var(--ink);display:inline-block;}
+    .legend .v{font-size:14px;font-weight:800;}
+    .v.orange{color:var(--signal);} .v.green{color:var(--success);}
+
+    .actions{display:flex;gap:10px;}
+    .actions button{flex:1;border-radius:11px;padding:12px;font-size:12px;font-weight:700;border:1.5px solid var(--ink);background:var(--card);color:var(--ink);display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:2px 2px 0 0 var(--ink);}
+    .actions button svg{width:14px;height:14px;stroke:currentColor;}
+    .actions button.primary{background:var(--signal);color:#fff;}
+
+    .line{padding:15px 16px;}
+    .line .top{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+    .itile{width:34px;height:34px;border:1.5px solid var(--ink);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .itile svg{width:17px;height:17px;}
+    .line .nm{font-size:14px;font-weight:700;}
+    .badge{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;padding:3px 7px;border-radius:999px;border:1.5px solid var(--ink);text-transform:uppercase;letter-spacing:.03em;}
+    .b-ess{background:var(--neutral-soft);color:var(--ink-2);}
+    .b-over{background:var(--signal-soft);color:var(--signal);}
+    .line .am{margin-left:auto;font-size:12px;font-weight:700;color:var(--ink-2);}
+    .bar{height:10px;border-radius:999px;background:var(--line);overflow:hidden;}
+    .bar>span{display:block;height:100%;border-radius:999px;}
+    .f-ok{background:var(--success);} .f-mid{background:var(--ink);} .f-over{background:var(--signal);}
+    .note{font-size:11px;font-weight:700;margin-top:8px;}
+    .note.over{color:var(--signal);} .note.left{color:var(--ink-3);}
+
+    .tabbar{position:sticky;bottom:0;margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:2px;padding:11px 18px 20px;background:var(--paper);border-top:1.5px solid var(--ink);}
+    .tab{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--ink-3);flex:1;text-transform:uppercase;letter-spacing:.03em;}
+    .tab.active{color:var(--ink);}
+    .tab svg{width:21px;height:21px;}
+    .fab{width:50px;height:50px;border-radius:14px;border:1.5px solid var(--ink);background:var(--signal);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:-18px;box-shadow:3px 3px 0 0 var(--ink);}
+    .fab svg{width:24px;height:24px;}
+  </style>
+</helmet>
+
+<div class="screen">
+  <div class="head">
+    <div>
+      <div class="brand"><img src="logo.svg" alt="Hector Giraldo" /></div>
+      <h1 class="dsp">Presupuesto</h1>
+    </div>
+    <div class="mn">
+      <button type="button" aria-label="Mes anterior"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button>
+      <span class="lbl dsp">Sept. 2026</span>
+      <button type="button" aria-label="Mes siguiente"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="card gauge">
+      <div class="ring">
+        <svg width="116" height="116" viewBox="0 0 116 116">
+          <circle cx="58" cy="58" r="50" fill="none" stroke="#DEDAD0" stroke-width="12"/>
+          <circle cx="58" cy="58" r="50" fill="none" stroke="#FF4D00" stroke-width="12" stroke-linecap="round" stroke-dasharray="314.2" stroke-dashoffset="84.8"/>
+        </svg>
+        <div class="center">
+          <span class="pct dsp num">73%</span>
+          <span class="cap">gastado</span>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="li"><span class="k"><i style="background:var(--neutral-soft);"></i>Planificado</span><span class="v num">1.980 €</span></div>
+        <div class="li"><span class="k"><i style="background:var(--signal);"></i>Gastado</span><span class="v orange num">1.447 €</span></div>
+        <div class="li"><span class="k"><i style="background:var(--success);"></i>Disponible</span><span class="v green num">533 €</span></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+        Copiar mes anterior
+      </button>
+      <button type="button" class="primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        Categoría
+      </button>
+    </div>
+
+    <div class="card line">
+      <div class="top">
+        <div class="itile" style="background:var(--neutral-soft);color:var(--ink);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4v-5H10v5H5a1 1 0 0 1-1-1z"/></svg>
+        </div>
+        <span class="nm">Vivienda</span>
+        <span class="badge b-ess">Esencial</span>
+        <span class="am num">850 / 900 €</span>
+      </div>
+      <div class="bar"><span class="f-ok" style="width:94%;"></span></div>
+      <div class="note left">Te quedan 50 €</div>
+    </div>
+
+    <div class="card line">
+      <div class="top">
+        <div class="itile" style="background:var(--ochre-soft);color:var(--ochre);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v7a3 3 0 0 0 6 0V3"/><path d="M9 10v11"/><path d="M17 3c-1.5 1-2 3-2 5s.5 3 2 3v10"/></svg>
+        </div>
+        <span class="nm">Alimentación</span>
+        <span class="badge b-ess">Esencial</span>
+        <span class="am num">432 / 480 €</span>
+      </div>
+      <div class="bar"><span class="f-mid" style="width:90%;"></span></div>
+      <div class="note left">Te quedan 48 €</div>
+    </div>
+
+    <div class="card line">
+      <div class="top">
+        <div class="itile" style="background:var(--signal-soft);color:var(--signal);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13 6.6 8.2A2 2 0 0 1 8.5 7h7a2 2 0 0 1 1.9 1.2L19 13"/><path d="M4 13h16v4a1 1 0 0 1-1 1h-1M6 18H5a1 1 0 0 1-1-1z"/><circle cx="8" cy="18" r="1.4"/><circle cx="16" cy="18" r="1.4"/></svg>
+        </div>
+        <span class="nm">Ocio</span>
+        <span class="badge b-over">Superado</span>
+        <span class="am num">214 / 180 €</span>
+      </div>
+      <div class="bar"><span class="f-over" style="width:100%;"></span></div>
+      <div class="note over">Te has pasado 34 €</div>
+    </div>
+
+    <div class="card line">
+      <div class="top">
+        <div class="itile" style="background:var(--neutral-soft);color:var(--ink);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="m10 10 5 3-5 3z"/></svg>
+        </div>
+        <span class="nm">Suscripciones</span>
+        <span class="am num">38 / 60 €</span>
+      </div>
+      <div class="bar"><span class="f-ok" style="width:63%;"></span></div>
+      <div class="note left">Te quedan 22 €</div>
+    </div>
+  </div>
+
+  <nav class="tabbar">
+    <a class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4v-5H10v5H5a1 1 0 0 1-1-1z"/></svg>
+      Resumen
+    </a>
+    <a class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 4v13m0 0-3.5-3.5M17 17l3.5-3.5"/><path d="M7 20V7m0 0L3.5 10.5M7 7l3.5 3.5"/></svg>
+      Movim.
+    </a>
+    <button class="fab" type="button" aria-label="Nuevo movimiento">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <a class="tab active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4"/></svg>
+      Presup.
+    </a>
+    <a class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>
+      Más
+    </a>
+  </nav>
+</div>
+</x-dc>
+</body>
+</html>

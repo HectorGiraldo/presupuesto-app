@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+  <style>
+    :root{
+      --paper:#F7F5EF; --card:#FFFFFF; --ink:#16140F; --ink-2:#5C594E; --ink-3:#8B8779;
+      --line:#DEDAD0; --signal:#FF4D00; --signal-soft:#FFE4D8; --dot:#E3E0D5;
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;font-family:'Instrument Sans',system-ui,sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;}
+    .dsp{font-family:'Bricolage Grotesque','Instrument Sans',system-ui,sans-serif;}
+    a{color:var(--signal);text-decoration:none;font-weight:700;} a:hover{color:#E04400;}
+    input{font-family:inherit;}
+    .screen{width:390px;min-height:844px;display:flex;flex-direction:column;background:var(--paper);
+      background-image:radial-gradient(var(--dot) 1.1px,transparent 1.1px);background-size:22px 22px;}
+
+    .top{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:44px 32px 12px;}
+    .mark{width:60px;height:auto;display:block;}
+    .brand{font-size:26px;font-weight:800;letter-spacing:-.02em;}
+    .tag{font-size:14px;font-weight:500;color:var(--ink-2);text-align:center;line-height:1.45;margin-top:-4px;}
+    .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);}
+
+    .sheet{background:var(--card);border:1.5px solid var(--ink);border-top-left-radius:22px;border-top-right-radius:22px;
+      border-bottom:none;padding:26px 22px 32px;box-shadow:0 -4px 0 0 var(--signal);display:flex;flex-direction:column;gap:14px;}
+    .sheet h2{margin:0 0 2px;font-size:19px;font-weight:700;letter-spacing:-.01em;}
+
+    .field{display:flex;flex-direction:column;gap:6px;}
+    .field label{font-size:12px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.03em;}
+    .field input{padding:13px 14px;border-radius:11px;border:1.5px solid var(--ink);background:var(--paper);
+      font-size:14px;font-weight:600;color:var(--ink);}
+    .field input::placeholder{color:var(--ink-3);font-weight:500;}
+    .field input:focus{outline:none;box-shadow:2px 2px 0 0 var(--signal);}
+
+    .forgot{align-self:flex-end;font-size:12px;font-weight:700;color:var(--ink-2);}
+    .btn{margin-top:4px;padding:15px;border-radius:12px;border:1.5px solid var(--ink);background:var(--signal);color:#fff;
+      font-size:15px;font-weight:700;letter-spacing:.01em;box-shadow:3px 3px 0 0 var(--ink);}
+    .switch{text-align:center;font-size:13px;font-weight:500;color:var(--ink-2);margin-top:2px;}
+  </style>
+</helmet>
+
+<div class="screen">
+  <div class="top">
+    <img class="mark" src="logo.svg" alt="Hector Giraldo" />
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+      <div class="eyebrow">Hector Giraldo</div>
+      <div class="brand dsp">Mi Presupuesto</div>
+    </div>
+    <div class="tag">Controla tus finanzas con calma,<br>mes a mes.</div>
+  </div>
+
+  <div class="sheet">
+    <h2 class="dsp">Inicia sesión</h2>
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" type="email" placeholder="tu@email.com" autocomplete="email" />
+    </div>
+    <div class="field">
+      <label for="password">Contraseña</label>
+      <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" />
+    </div>
+    <a class="forgot">¿Olvidaste tu contraseña?</a>
+    <button class="btn" type="button">Entrar</button>
+    <div class="switch">¿No tienes cuenta? <a>Regístrate</a></div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+  <style>
+    :root{
+      --paper:#F7F5EF; --card:#FFFFFF; --ink:#16140F; --ink-2:#5C594E; --ink-3:#8B8779;
+      --line:#DEDAD0; --line-2:#E7E4DA; --signal:#FF4D00; --signal-soft:#FFE4D8;
+      --success:#0E9F6E; --success-soft:#DCF3EA; --dot:#E3E0D5;
+      --ochre:#B27A17; --ochre-soft:#F6EBD5; --neutral-soft:#EFEAE0;
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;font-family:'Instrument Sans',system-ui,sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;}
+    .dsp{font-family:'Bricolage Grotesque','Instrument Sans',system-ui,sans-serif;}
+    .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums;letter-spacing:-.03em;}
+    a{color:var(--signal);text-decoration:none;} a:hover{color:#E04400;}
+    .screen{width:390px;min-height:844px;background:var(--paper);
+      background-image:radial-gradient(var(--dot) 1.1px,transparent 1.1px);background-size:22px 22px;
+      display:flex;flex-direction:column;overflow:hidden;}
+    .card{background:var(--card);border:1.5px solid var(--ink);border-radius:14px;box-shadow:3px 3px 0 0 var(--ink);}
+    .muted{color:var(--ink-2);}
+
+    .head{display:flex;align-items:flex-end;justify-content:space-between;padding:22px 20px 12px;}
+    .brand{display:flex;align-items:center;gap:8px;}
+    .brand img{width:20px;height:auto;display:block;}
+    .head h1{margin:3px 0 0;font-size:23px;font-weight:800;letter-spacing:-.02em;}
+    .iconbtn{width:42px;height:42px;border-radius:11px;border:1.5px solid var(--ink);background:var(--signal);color:#fff;
+      display:flex;align-items:center;justify-content:center;box-shadow:2px 2px 0 0 var(--ink);}
+    .iconbtn svg{width:20px;height:20px;stroke:currentColor;}
+
+    .body{flex:1;display:flex;flex-direction:column;gap:14px;padding:6px 20px 26px;}
+
+    .hero{padding:16px 18px;display:flex;align-items:center;justify-content:space-between;}
+    .hero .k{font-size:11px;font-weight:600;color:var(--ink-2);text-transform:uppercase;letter-spacing:.04em;}
+    .hero .v{font-size:23px;font-weight:800;letter-spacing:-.02em;margin-top:3px;}
+    .hero .v.green{color:var(--success);}
+    .hero .side{text-align:right;}
+    .hero .side .s{font-size:15px;font-weight:800;margin-top:3px;}
+
+    .goal{padding:16px;}
+    .goal .top{display:flex;align-items:center;gap:11px;margin-bottom:12px;}
+    .itile{width:40px;height:40px;border:1.5px solid var(--ink);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .itile svg{width:19px;height:19px;}
+    .goal .nm{font-size:14.5px;font-weight:700;}
+    .goal .sub{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;color:var(--ink-3);margin-top:2px;text-transform:uppercase;letter-spacing:.05em;}
+    .goal .pct{margin-left:auto;font-size:16px;font-weight:800;}
+    .bar{height:11px;border-radius:999px;background:var(--line);overflow:hidden;}
+    .bar>span{display:block;height:100%;border-radius:999px;background:var(--success);}
+    .goal .foot{display:flex;align-items:center;justify-content:space-between;margin-top:11px;}
+    .goal .amt{font-size:12.5px;font-weight:700;}
+    .goal .need{font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;color:var(--ink-2);border:1.5px solid var(--ink);background:var(--neutral-soft);padding:3px 8px;border-radius:999px;}
+
+    .tabbar{position:sticky;bottom:0;margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:2px;padding:11px 18px 20px;background:var(--paper);border-top:1.5px solid var(--ink);}
+    .tab{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--ink-3);flex:1;text-transform:uppercase;letter-spacing:.03em;}
+    .tab.active{color:var(--ink);}
+    .tab svg{width:21px;height:21px;}
+    .fab{width:50px;height:50px;border-radius:14px;border:1.5px solid var(--ink);background:var(--signal);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:-18px;box-shadow:3px 3px 0 0 var(--ink);}
+    .fab svg{width:24px;height:24px;}
+  </style>
+</helmet>
+
+<div class="screen">
+  <div class="head">
+    <div>
+      <div class="brand"><img src="logo.svg" alt="Hector Giraldo" /></div>
+      <h1 class="dsp">Metas</h1>
+    </div>
+    <button class="iconbtn" type="button" aria-label="Nueva meta">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+  </div>
+
+  <div class="body">
+    <div class="card hero">
+      <div>
+        <div class="k">Ahorrado en metas</div>
+        <div class="v green num">9.240 €</div>
+      </div>
+      <div class="side">
+        <div class="k">Objetivo total</div>
+        <div class="s num">28.500 €</div>
+      </div>
+    </div>
+
+    <div class="card goal">
+      <div class="top">
+        <div class="itile" style="background:var(--success-soft);color:var(--success);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a7 7 0 0 0-4 12.7V19h8v-3.3A7 7 0 0 0 12 3z"/><path d="M9 22h6"/></svg>
+        </div>
+        <div>
+          <div class="nm">Fondo de emergencia</div>
+          <div class="sub">Sin fecha límite</div>
+        </div>
+        <div class="pct num">78%</div>
+      </div>
+      <div class="bar"><span style="width:78%;"></span></div>
+      <div class="foot">
+        <span class="amt num">4.680 € <span class="muted">/ 6.000 €</span></span>
+        <span class="need">200 €/mes</span>
+      </div>
+    </div>
+
+    <div class="card goal">
+      <div class="top">
+        <div class="itile" style="background:var(--neutral-soft);color:var(--ink);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7"/><path d="M6 12a6 6 0 0 0 6 6"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div>
+          <div class="nm">Viaje a Japón</div>
+          <div class="sub">Objetivo: abril 2027</div>
+        </div>
+        <div class="pct num">42%</div>
+      </div>
+      <div class="bar"><span style="width:42%;"></span></div>
+      <div class="foot">
+        <span class="amt num">2.520 € <span class="muted">/ 6.000 €</span></span>
+        <span class="need">495 €/mes</span>
+      </div>
+    </div>
+
+    <div class="card goal">
+      <div class="top">
+        <div class="itile" style="background:var(--ochre-soft);color:var(--ochre);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13 6.6 8.2A2 2 0 0 1 8.5 7h7a2 2 0 0 1 1.9 1.2L19 13"/><path d="M4 13h16v4a1 1 0 0 1-1 1h-1M6 18H5a1 1 0 0 1-1-1z"/><circle cx="8" cy="18" r="1.4"/><circle cx="16" cy="18" r="1.4"/></svg>
+        </div>
+        <div>
+          <div class="nm">Coche nuevo</div>
+          <div class="sub">Objetivo: diciembre 2027</div>
+        </div>
+        <div class="pct num">13%</div>
+      </div>
+      <div class="bar"><span style="width:13%;"></span></div>
+      <div class="foot">
+        <span class="amt num">2.040 € <span class="muted">/ 16.500 €</span></span>
+        <span class="need">925 €/mes</span>
+      </div>
+    </div>
+  </div>
+
+  <nav class="tabbar">
+    <a class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4v-5H10v5H5a1 1 0 0 1-1-1z"/></svg>
+      Resumen
+    </a>
+    <a class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 4v13m0 0-3.5-3.5M17 17l3.5-3.5"/><path d="M7 20V7m0 0L3.5 10.5M7 7l3.5 3.5"/></svg>
+      Movim.
+    </a>
+    <button class="fab" type="button" aria-label="Nuevo movimiento">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <a class="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4"/></svg>
+      Presup.
+    </a>
+    <a class="tab active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>
+      Más
+    </a>
+  </nav>
+</div>
+</x-dc>
+</body>
+</html>
