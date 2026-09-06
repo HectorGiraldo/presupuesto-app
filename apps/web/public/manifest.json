@@ -1,0 +1,15 @@
+{
+  "name": "Mi Presupuesto",
+  "short_name": "Presupuesto",
+  "description": "Control de presupuesto personal: movimientos, presupuesto mensual, metas y deudas.",
+  "lang": "es",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7f5ef",
+  "theme_color": "#f7f5ef",
+  "icons": [
+    { "src": "/apple-touch-icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
