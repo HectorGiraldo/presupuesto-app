@@ -141,14 +141,14 @@
   .bottomnav {
     display: flex; align-items: center; justify-content: space-between; gap: 2px;
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 22;
-    height: calc(var(--bottomnav-h) + env(safe-area-inset-bottom));
-    padding: 0 14px env(safe-area-inset-bottom);
+    min-height: calc(var(--bottomnav-h) + env(safe-area-inset-bottom));
+    padding: 6px 14px calc(6px + env(safe-area-inset-bottom));
     background: var(--color-surface);
     border-top: 1.5px solid var(--color-line-strong);
   }
   .bn-item {
     flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
-    padding: 8px 0; background: none; border: none;
+    padding: 4px 0; background: none; border: none;
     color: var(--color-text-subtle);
     font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
   }
@@ -156,7 +156,7 @@
   .bn-item .ic { width: 21px; height: 21px; }
 
   .bn-fab {
-    flex-shrink: 0; width: 50px; height: 50px; margin-top: -18px;
+    flex-shrink: 0; width: 46px; height: 46px;
     display: flex; align-items: center; justify-content: center;
     border: 1.5px solid var(--color-line-strong);
     border-radius: var(--radius);
