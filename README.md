@@ -32,7 +32,7 @@ amortización, vista anual y reportes. Todo en euros y en español.
 | Backend | NestJS 11 + TypeORM |
 | Base de datos | PostgreSQL 16 |
 | Monorepo | npm workspaces |
-| Despliegue | Docker (nginx sirve Angular y hace de proxy de `/api` a NestJS bajo un único dominio) |
+| Despliegue | Docker, un recurso por servicio (Postgres, api, web) |
 
 ## Estructura del proyecto
 
@@ -43,8 +43,7 @@ presupuesto-app/
 │  └─ web/      # Frontend Angular
 ├─ packages/
 │  └─ shared/   # Tipos, DTOs y utilidades compartidas entre api y web
-├─ docker-compose.yml           # Base: sin puertos publicados (lo que usa Coolify)
-└─ docker-compose.override.yml # Solo local: añade los puertos para abrir localhost
+└─ docker-compose.yml   # Solo para desarrollo local / probar el stack completo
 ```
 
 ## Desarrollo local
@@ -74,35 +73,59 @@ npm run dev
 
 La web queda en `http://localhost:4200` (con proxy a la API en `http://localhost:3000`).
 
-## Despliegue con Docker / Coolify
-
-`docker-compose.yml` es la base y **no publica ningún puerto al host** — es
-el archivo que se apunta tal cual en Coolify (o cualquier host donde un proxy
-ya ocupe el 80/443). Si un servicio publicara un puerto con `host:contenedor`,
-Coolify lo enlazaría literalmente en el servidor saltándose su propio proxy:
-reventaría ese proxy en el caso de `web`, y dejaría la base de datos expuesta
-a internet en el caso de `postgres`.
+### Probar el stack completo en Docker (local)
 
 ```bash
-# Prueba local del stack completo (usa docker-compose.yml +
-# docker-compose.override.yml automáticamente, así que sí expone puertos)
 docker compose up -d --build
 ```
 
-Levanta tres contenedores: `postgres`, `api` y `web`. El contenedor `web`
-sirve el build de Angular con nginx y reenvía `/api` al contenedor `api`, así
-que en producción solo hace falta publicar **un** dominio — no hay que
-configurar CORS.
+Levanta `postgres`, `api` (puerto 3000) y `web` (puerto 80). Aquí el navegador
+llama **directo** a `http://localhost:3000` — no hay proxy de por medio —, con
+CORS habilitado en la API para el origen de `web`. Es el mismo modelo que en
+producción, solo que con dominios locales.
 
-**En Coolify**: nuevo recurso → Docker Compose → repositorio público (o el que
-uses) → "Docker Compose Location": `docker-compose.yml` (el de la raíz, sin
-más). Asigna el dominio únicamente al servicio `web` desde la pestaña
-Domains — `api` y `postgres` no lo necesitan, se hablan entre sí por nombre
-de servicio dentro de la red que crea el propio stack.
+## Despliegue en Coolify
 
-Variables de entorno necesarias (ver `.env.example`): credenciales de la base
-de datos y `JWT_SECRET`. Las migraciones se aplican automáticamente al arrancar
-el contenedor de la API.
+Cada servicio es un **recurso independiente** en Coolify (nada de desplegar el
+`docker-compose.yml` como stack — el soporte de Coolify para Docker Compose
+desde un repositorio git tiene bugs conocidos que impiden que lea el archivo).
+
+1. **Base de datos**: *Resources → New → Databases → PostgreSQL*. Recurso
+   nativo de Coolify: backups programables, sin mantenimiento propio. Copia el
+   dato de conexión interno que te da (algo como
+   `postgres://usuario:contraseña@host:5432/basededatos`).
+
+2. **`api`**: *New Resource → Dockerfile* (o "Public Repository" y Coolify
+   detecta el Dockerfile) → `Dockerfile Location`: `apps/api/Dockerfile`,
+   `Base Directory`: `/` (la raíz del repo — el Dockerfile necesita ver
+   también `packages/shared`). Variables de entorno:
+   - `DATABASE_URL`: la del paso 1.
+   - `JWT_SECRET`: cadena larga aleatoria.
+   - `JWT_EXPIRES_IN=30d`, `ALLOW_REGISTRATION=true` (ciérralo tras crear tu usuario).
+   - `CORS_ORIGINS`: el dominio que le vayas a poner a `web` (paso 3), ej.
+     `https://presupuesto.tudominio.com`.
+
+   Asígnale un dominio (o el `.sslip.io` gratuito que da Coolify) — lo
+   necesita `web` para poder llamarla.
+
+3. **`web`**: *New Resource → Dockerfile* → `Dockerfile Location`:
+   `apps/web/Dockerfile`, `Base Directory`: `/`. En **Build Arguments** (no en
+   variables de entorno normales: esto se compila dentro del bundle de
+   Angular) añade:
+   - `API_BASE_URL`: la URL pública de `api` del paso 2 **+ `/api`**, ej.
+     `https://api-xxxxx.sslip.io/api`.
+
+   Asígnale tu dominio real.
+
+4. **Deploy** cada recurso (en el orden 1 → 2 → 3). Las migraciones de la base
+   de datos se aplican automáticamente al arrancar `api`.
+
+5. Regístrate en `web` con tu email real, y luego pon `ALLOW_REGISTRATION=false`
+   en `api` y redeploy, para que nadie más pueda crear una cuenta.
+
+Como el despliegue es manual (repositorio público sin la GitHub App, para no
+depender de que Coolify reciba webhooks de GitHub), cada actualización es
+pulsar **Deploy** en `api` y/o `web` tras hacer push.
 
 ## Scripts del monorepo
 

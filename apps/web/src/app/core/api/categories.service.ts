@@ -2,11 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import type { Category, CreateCategoryDto, UpdateCategoryDto } from '@presupuesto/shared';
 import { Observable } from 'rxjs';
+import { API_BASE } from './api-base';
 
 @Injectable({ providedIn: 'root' })
 export class CategoriesApi {
   private readonly http = inject(HttpClient);
-  private readonly base = '/api/categories';
+  private readonly base = `${API_BASE}/categories`;
 
   findAll(includeArchived = false): Observable<Category[]> {
     return this.http.get<Category[]>(this.base, { params: { includeArchived } });

@@ -4,11 +4,12 @@ import type {
   CreateContributionDto, CreateGoalDto, Goal, GoalContribution, UpdateGoalDto,
 } from '@presupuesto/shared';
 import { Observable } from 'rxjs';
+import { API_BASE } from './api-base';
 
 @Injectable({ providedIn: 'root' })
 export class GoalsApi {
   private readonly http = inject(HttpClient);
-  private readonly base = '/api/goals';
+  private readonly base = `${API_BASE}/goals`;
 
   findAll(includeArchived = false): Observable<Goal[]> {
     return this.http.get<Goal[]>(this.base, { params: { includeArchived } });

@@ -4,11 +4,12 @@ import type {
   CreateTransactionDto, Transaction, TransactionList, TransactionQuery, UpdateTransactionDto,
 } from '@presupuesto/shared';
 import { Observable } from 'rxjs';
+import { API_BASE } from './api-base';
 
 @Injectable({ providedIn: 'root' })
 export class TransactionsApi {
   private readonly http = inject(HttpClient);
-  private readonly base = '/api/transactions';
+  private readonly base = `${API_BASE}/transactions`;
 
   findAll(query: TransactionQuery = {}): Observable<TransactionList> {
     const params: Record<string, string | number> = {};

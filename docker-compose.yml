@@ -1,14 +1,10 @@
-# Base del stack: postgres + api + web, SIN publicar ningún puerto al host.
-# Esto es lo que se apunta tal cual en Coolify (u otro host donde un proxy ya
-# ocupe el 80/443): si un servicio publicara un puerto con "host:contenedor",
-# Coolify lo enlazaría literalmente en el servidor saltándose su propio proxy
-# — reventaría ese proxy en el caso de "web", y dejaría la base de datos
-# expuesta a internet en el caso de "postgres".
+# SOLO para desarrollo local / probar el stack completo en tu máquina.
+# Coolify NO usa este archivo — allí cada servicio (Postgres gestionado, api,
+# web) es un recurso independiente; ver la sección "Despliegue" del README.
 #
-# Para desarrollo local, docker-compose.override.yml (que Docker Compose
-# carga automáticamente junto a este) añade los puertos que hacen falta para
-# poder abrir localhost en el navegador y conectar un cliente SQL. Ese
-# override nunca se despliega en Coolify porque solo se le indica esta ruta.
+# Aquí el navegador llama directo a la API en localhost:3000 (por eso "api"
+# publica su puerto y tiene CORS_ORIGINS apuntando a donde sirve "web"): es
+# el mismo modelo que en producción, solo que con dominios locales.
 name: presupuesto-app
 
 services:
@@ -21,6 +17,8 @@ services:
       POSTGRES_DB: ${DB_NAME:-presupuesto}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-presupuesto}"]
       interval: 5s
@@ -35,6 +33,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    ports:
+      - "3000:3000"
     environment:
       NODE_ENV: production
       PORT: 3000
@@ -46,16 +46,19 @@ services:
       JWT_SECRET: ${JWT_SECRET:?Falta JWT_SECRET}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-30d}
       ALLOW_REGISTRATION: ${ALLOW_REGISTRATION:-true}
-      # nginx sirve web y api bajo el mismo dominio -> no hace falta whitelistar orígenes.
-      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost}
+      CORS_ORIGINS: http://localhost
 
   web:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
+      args:
+        API_BASE_URL: http://localhost:3000/api
     restart: unless-stopped
     depends_on:
       - api
+    ports:
+      - "80:80"
 
 volumes:
   postgres_data:

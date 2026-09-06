@@ -4,11 +4,12 @@ import type {
   CreateRecurringRuleDto, PendingRecurring, RecurringRule, UpdateRecurringRuleDto,
 } from '@presupuesto/shared';
 import { Observable } from 'rxjs';
+import { API_BASE } from './api-base';
 
 @Injectable({ providedIn: 'root' })
 export class RecurringApi {
   private readonly http = inject(HttpClient);
-  private readonly base = '/api/recurring';
+  private readonly base = `${API_BASE}/recurring`;
 
   findAll(includeInactive = false): Observable<RecurringRule[]> {
     return this.http.get<RecurringRule[]>(this.base, { params: { includeInactive } });

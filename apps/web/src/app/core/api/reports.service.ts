@@ -4,11 +4,12 @@ import type {
   AnnualSummary, CashflowPoint, CategoryTrend, DashboardSummary, EssentialsSplit, MonthlySummary,
 } from '@presupuesto/shared';
 import { Observable } from 'rxjs';
+import { API_BASE } from './api-base';
 
 @Injectable({ providedIn: 'root' })
 export class ReportsApi {
   private readonly http = inject(HttpClient);
-  private readonly base = '/api/reports';
+  private readonly base = `${API_BASE}/reports`;
 
   monthlySummary(year: number, month: number): Observable<MonthlySummary> {
     return this.http.get<MonthlySummary>(`${this.base}/monthly-summary`, { params: { year, month } });
@@ -36,6 +37,6 @@ export class DashboardApi {
   private readonly http = inject(HttpClient);
 
   summary(): Observable<DashboardSummary> {
-    return this.http.get<DashboardSummary>('/api/dashboard');
+    return this.http.get<DashboardSummary>(`${API_BASE}/dashboard`);
   }
 }

@@ -4,11 +4,12 @@ import type {
   BudgetLine, BudgetProgress, CopyBudgetDto, UpsertBudgetLineDto,
 } from '@presupuesto/shared';
 import { Observable } from 'rxjs';
+import { API_BASE } from './api-base';
 
 @Injectable({ providedIn: 'root' })
 export class BudgetsApi {
   private readonly http = inject(HttpClient);
-  private readonly base = '/api/budgets';
+  private readonly base = `${API_BASE}/budgets`;
 
   findAll(year: number, month: number | null): Observable<BudgetLine[]> {
     const params: Record<string, number> = { year };

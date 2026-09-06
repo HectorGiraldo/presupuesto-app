@@ -31,7 +31,10 @@
             ],
             "styles": [
               "src/styles.scss"
-            ]
+            ],
+            "define": {
+              "API_BASE_URL": "'/api'"
+            }
           },
           "configurations": {
             "production": {

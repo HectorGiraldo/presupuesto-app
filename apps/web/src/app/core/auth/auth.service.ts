@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import type { AuthResponse, User } from '@presupuesto/shared';
 import { Observable, tap } from 'rxjs';
+import { API_BASE } from '../api/api-base';
 
 const TOKEN_KEY = 'presupuesto.token';
 const USER_KEY = 'presupuesto.user';
@@ -31,20 +32,20 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>('/api/auth/login', { email, password }).pipe(
+    return this.http.post<AuthResponse>(`${API_BASE}/auth/login`, { email, password }).pipe(
       tap((res) => this.setSession(res)),
     );
   }
 
   register(email: string, password: string, name: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>('/api/auth/register', { email, password, name }).pipe(
+    return this.http.post<AuthResponse>(`${API_BASE}/auth/register`, { email, password, name }).pipe(
       tap((res) => this.setSession(res)),
     );
   }
 
   /** Llamado al arrancar la app para comprobar que el token guardado sigue siendo válido. */
   refreshMe(): Observable<User> {
-    return this.http.get<User>('/api/auth/me').pipe(
+    return this.http.get<User>(`${API_BASE}/auth/me`).pipe(
       tap((user) => {
         this._user.set(user);
         localStorage.setItem(USER_KEY, JSON.stringify(user));

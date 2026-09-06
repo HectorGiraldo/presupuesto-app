@@ -4,11 +4,12 @@ import type {
   AmortizationSchedule, CreateDebtDto, CreateDebtPaymentDto, Debt, DebtPayment, UpdateDebtDto,
 } from '@presupuesto/shared';
 import { Observable } from 'rxjs';
+import { API_BASE } from './api-base';
 
 @Injectable({ providedIn: 'root' })
 export class DebtsApi {
   private readonly http = inject(HttpClient);
-  private readonly base = '/api/debts';
+  private readonly base = `${API_BASE}/debts`;
 
   findAll(includeArchived = false): Observable<Debt[]> {
     return this.http.get<Debt[]>(this.base, { params: { includeArchived } });
