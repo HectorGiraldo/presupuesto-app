@@ -157,6 +157,23 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
 }
 .field .error { color: var(--color-danger); font-size: 0.8rem; font-weight: 600; }
 
+/* Campo obligatorio sin rellenar: se marca en rojo en cuanto se ha tocado
+   (al enfocarlo y salir) o al pulsar Guardar (el formulario marca todo como
+   "touched"). Cubre también el input de importe, que es un control propio. */
+.field input.ng-invalid.ng-touched,
+.field select.ng-invalid.ng-touched,
+.field textarea.ng-invalid.ng-touched,
+app-money-input.ng-invalid.ng-touched input {
+  border-color: var(--color-danger);
+  background: var(--color-danger-soft);
+}
+.field input.ng-invalid.ng-touched:focus,
+.field select.ng-invalid.ng-touched:focus,
+.field textarea.ng-invalid.ng-touched:focus,
+app-money-input.ng-invalid.ng-touched input:focus {
+  box-shadow: 2px 2px 0.5px 0 var(--color-danger);
+}
+
 /* El selector de color no es un input de texto: swatch visible, sin el padding de texto. */
 .field input[type="color"] {
   width: 100%;
@@ -296,6 +313,18 @@ th {
 .progress-bar .fill.warning { background: var(--color-line-strong); }
 .progress-bar .fill.exceeded { background: var(--color-primary); }
 .progress-bar .fill.unbudgeted { background: var(--color-text-subtle); }
+
+/* Safari/Chrome de iOS hacen zoom automático al enfocar un campo cuya letra
+   mida menos de 16px, y a veces no deshacen ese zoom al salir (hay que pellizcar
+   para volver). Con 16px en el móvil no llega a dispararse. No afecta a color /
+   checkbox / radio, que no reciben texto. */
+@media (max-width: 860px) {
+  input:not([type="color"]):not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
 
 /* Ajustes móviles comunes a todas las pantallas. */
 @media (max-width: 560px) {

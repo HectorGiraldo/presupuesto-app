@@ -60,16 +60,25 @@
       <div class="field">
         <label for="amount">Importe</label>
         <app-money-input formControlName="amountCents" />
+        @if (form.controls.amountCents.touched && form.controls.amountCents.invalid) {
+          <span class="error">Introduce un importe mayor que cero</span>
+        }
       </div>
       <div class="field">
         <label for="date">Fecha</label>
         <input id="date" type="date" formControlName="date" />
+        @if (form.controls.date.touched && form.controls.date.invalid) {
+          <span class="error">La fecha es obligatoria</span>
+        }
       </div>
       <div class="field">
         <label for="accountId">{{ isTransfer() ? 'Cuenta origen' : 'Cuenta' }}</label>
         <select id="accountId" formControlName="accountId">
           @for (a of accounts(); track a.id) { <option [value]="a.id">{{ a.name }}</option> }
         </select>
+        @if (form.controls.accountId.touched && form.controls.accountId.invalid) {
+          <span class="error">Selecciona una cuenta</span>
+        }
       </div>
       @if (isTransfer()) {
         <div class="field">
@@ -91,6 +100,9 @@
       <div class="field">
         <label for="description">Concepto</label>
         <input id="description" type="text" formControlName="description" placeholder="Compra semanal…" />
+        @if (form.controls.description.touched && form.controls.description.invalid) {
+          <span class="error">El concepto es obligatorio</span>
+        }
       </div>
     </div>
     <div class="field">

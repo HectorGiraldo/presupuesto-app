@@ -23,7 +23,15 @@ import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+      // En local, el .env real vive en la raíz del monorepo; `npm run -w` deja el
+      // cwd en apps/api, así que hay que subir dos niveles. El .env del propio
+      // paquete (si existe) tiene prioridad. En Docker no hay .env: las variables
+      // llegan del entorno y ConfigModule ignora los ficheros que no encuentra.
+      envFilePath: ['.env', '../../.env'],
+    }),
     ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

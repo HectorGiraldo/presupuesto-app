@@ -147,6 +147,11 @@ export class TransactionsPageComponent implements OnInit {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      // En móvil el formulario es largo: lleva la vista al primer campo con error
+      // para que se vea por qué no se guarda.
+      queueMicrotask(() =>
+        document.querySelector('.form-card .ng-invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+      );
       return;
     }
     const raw = this.form.getRawValue();

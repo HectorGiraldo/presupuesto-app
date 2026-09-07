@@ -67,7 +67,9 @@ export class MoneyInputComponent implements ControlValueAccessor {
   private onTouched: () => void = () => {};
 
   writeValue(cents: number | null): void {
-    this.text.set(cents === null || cents === undefined ? '' : toEuros(cents).toFixed(2).replace('.', ','));
+    // 0 (o vacío) se muestra como placeholder "0,00", no como valor escrito:
+    // así se distingue "no he puesto importe" de "el importe es 0".
+    this.text.set(cents ? toEuros(cents).toFixed(2).replace('.', ',') : '');
   }
 
   registerOnChange(fn: (value: number | null) => void): void {

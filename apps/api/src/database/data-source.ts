@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { resolve } from 'node:path';
 import { config as loadEnv } from 'dotenv';
 import { DataSource } from 'typeorm';
 import {
@@ -6,7 +7,11 @@ import {
   GoalContributionEntity, GoalEntity, RecurringRuleEntity, TransactionEntity, UserEntity,
 } from './entities';
 
+// El .env del paquete (si existe) y, para lo que falte, el de la raíz del
+// monorepo, que es donde vive el real en desarrollo. `npm run -w` deja el cwd
+// en apps/api. En Docker no hay .env y las variables vienen del entorno.
 loadEnv();
+loadEnv({ path: resolve(process.cwd(), '../../.env') });
 
 /** Se listan explícitamente en vez de usar globs: así funciona igual en ts-node, en dist y en Docker. */
 export const entities = [
