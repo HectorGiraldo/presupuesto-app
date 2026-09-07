@@ -64,10 +64,13 @@
 
 .content {
   flex: 1;
-  min-width: 0;
-  overflow-x: clip;        /* nada dentro del contenido debe desbordar a lo ancho */
+  min-width: 0;            /* que no lo estire un hijo ancho (tablas con min-width) */
   padding: 1.6rem 2rem 2.5rem;
 }
+/* Nada de 'overflow' aquí: al ser un flex-item, 'overflow-x: clip' lo trataba
+   como 'hidden' en Safari/Chrome de iOS (recortaba también en vertical) y dejaba
+   el formulario de movimiento cortado. El scroll horizontal accidental se corta
+   en <html> (styles.scss) y cada tabla ancha ya scrollea dentro de su tarjeta. */
 
 /* Solo en escritorio limitamos el ancho del contenido. En móvil ocupa todo el
    ancho: usar margin:auto sobre este flex-item lo estiraba al ancho de la tabla

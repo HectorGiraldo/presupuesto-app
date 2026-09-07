@@ -47,7 +47,11 @@ html, body {
   height: 100%;
   margin: 0;
 }
-html, body { overflow-x: clip; }
+/* Corta el scroll horizontal accidental sin atrapar el vertical. Antes esto era
+   'overflow-x: clip' en html, body y .content: en Safari/Chrome de iOS 'clip' se
+   comporta como 'hidden' en ambos ejes y dejaba cortado el formulario de
+   movimiento (se veía media pantalla vacía bajo el campo Categoría). */
+html { overflow-x: hidden; }
 
 /* El host de un componente de Angular es display:inline por defecto: si no se
    fuerza a block, se encoge a su contenido (una tabla con min-width lo estira y
